@@ -1,4 +1,4 @@
-import { BusinessUserRole } from '../generated/prisma'
+import type { BusinessUserRole } from '@prisma/client'
 
 declare module 'next-auth' {
   interface Session {

@@ -15,7 +15,7 @@ interface DashboardStats {
 export default function AdminDashboard() {
   const { data: session, status } = useSession();
   const router = useRouter();
-  const [stats, setStats] = useState<DashboardStats>({
+  const [stats] = useState<DashboardStats>({
     totalOrders: 0,
     pendingOrders: 0,
     totalCategories: 5,

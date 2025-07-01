@@ -79,7 +79,7 @@ export default function AdminOrdersPage() {
   const [error, setError] = useState("");
   const [selectedStatus, setSelectedStatus] = useState<string>("all");
   const [selectedOrderType, setSelectedOrderType] = useState<string>("all");
-  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+  // const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
 
   useEffect(() => {
     if (status === "loading") return;
@@ -126,7 +126,7 @@ export default function AdminOrdersPage() {
               orderItemOptions: [
                 {
                   id: "1",
-                  textValue: null,
+                  textValue: undefined,
                   additionalPrice: 15.0,
                   productOption: { name: "גודל" },
                   productOptionValue: { name: "משפחתית" },
@@ -165,7 +165,7 @@ export default function AdminOrdersPage() {
               orderItemOptions: [
                 {
                   id: "2",
-                  textValue: null,
+                  textValue: undefined,
                   additionalPrice: 0,
                   productOption: { name: "רמת צלייה" },
                   productOptionValue: { name: "מדיום" },
@@ -192,7 +192,9 @@ export default function AdminOrdersPage() {
 
       setOrders((prev) =>
         prev.map((order) =>
-          order.id === orderId ? { ...order, status: newStatus as any } : order
+          order.id === orderId
+            ? { ...order, status: newStatus as Order["status"] }
+            : order
         )
       );
 
