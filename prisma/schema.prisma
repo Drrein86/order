@@ -1,0 +1,277 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// עסקים
+model Business {
+  id          String   @id @default(cuid())
+  name        String
+  email       String
+  phone       String?
+  address     String?
+  description String?
+  logo        String? // URL ללוגו
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // קשרים
+  categories       Category[]
+  orders           Order[]
+  businessUsers    BusinessUser[]
+  businessSettings BusinessSettings?
+
+  @@map("businesses")
+}
+
+// משתמשי עסק (Admin Panel)
+model BusinessUser {
+  id         String           @id @default(cuid())
+  businessId String
+  email      String
+  password   String
+  name       String
+  role       BusinessUserRole @default(ADMIN)
+  isActive   Boolean          @default(true)
+  createdAt  DateTime         @default(now())
+  updatedAt  DateTime         @updatedAt
+
+  // קשרים
+  business Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+
+  @@unique([businessId, email])
+  @@map("business_users")
+}
+
+enum BusinessUserRole {
+  SUPER_ADMIN
+  ADMIN
+  VIEWER
+  CHEF
+}
+
+// הגדרות עסק
+model BusinessSettings {
+  id               String   @id @default(cuid())
+  businessId       String   @unique
+  backgroundVideo  String? // URL לוידאו רקע
+  primaryColor     String   @default("#3B82F6")
+  secondaryColor   String   @default("#F59E0B")
+  accentColor      String   @default("#10B981")
+  textColor        String   @default("#1F2937")
+  whatsappNumber   String?
+  emailEnabled     Boolean  @default(true)
+  whatsappEnabled  Boolean  @default(true)
+  printingEnabled  Boolean  @default(true)
+  isOrderingOpen   Boolean  @default(true) // מצב שקט בלילה
+  orderStartNumber Int      @default(1) // מספור הזמנות
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  // קשרים
+  business Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+
+  @@map("business_settings")
+}
+
+// קטגוריות
+model Category {
+  id          String   @id @default(cuid())
+  businessId  String
+  name        String
+  description String?
+  image       String? // URL לתמונה
+  order       Int      @default(0) // סדר תצוגה
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // קשרים
+  business Business  @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  products Product[]
+
+  @@map("categories")
+}
+
+// מוצרים
+model Product {
+  id          String   @id @default(cuid())
+  categoryId  String
+  name        String
+  description String?
+  price       Float
+  image       String? // URL לתמונה
+  isActive    Boolean  @default(true)
+  order       Int      @default(0) // סדר תצוגה
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // קשרים
+  category       Category        @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  productOptions ProductOption[]
+  orderItems     OrderItem[]
+
+  @@map("products")
+}
+
+// תוספות ואפשרויות למוצרים
+model ProductOption {
+  id            String            @id @default(cuid())
+  productId     String
+  name          String
+  type          ProductOptionType
+  isRequired    Boolean           @default(false)
+  maxSelections Int? // מקסימום בחירות (null = ללא הגבלה)
+  order         Int               @default(0)
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+
+  // קשרים
+  product             Product              @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productOptionValues ProductOptionValue[]
+  orderItemOptions    OrderItemOption[]
+
+  @@map("product_options")
+}
+
+enum ProductOptionType {
+  SINGLE_CHOICE // בחירה יחידה (רדיו)
+  MULTIPLE_CHOICE // בחירה מרובה (צ'קבוקס)
+  TEXT_INPUT // טקסט חופשי
+  SIZE_SELECTION // בחירת גודל
+  HALF_AND_HALF // חצי-חצי (לפיצה)
+}
+
+// ערכי תוספות
+model ProductOptionValue {
+  id              String   @id @default(cuid())
+  productOptionId String
+  name            String
+  additionalPrice Float    @default(0)
+  order           Int      @default(0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  // קשרים
+  productOption    ProductOption     @relation(fields: [productOptionId], references: [id], onDelete: Cascade)
+  orderItemOptions OrderItemOption[]
+
+  @@map("product_option_values")
+}
+
+// לקוחות
+model Customer {
+  id        String   @id @default(cuid())
+  name      String
+  phone     String
+  email     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // קשרים
+  orders Order[]
+
+  @@unique([phone])
+  @@map("customers")
+}
+
+// הזמנות
+model Order {
+  id          String      @id @default(cuid())
+  businessId  String
+  customerId  String
+  orderNumber Int // מספר הזמנה רצוף לפי עסק
+  orderType   OrderType
+  status      OrderStatus @default(PENDING)
+  totalAmount Float
+  notes       String?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  // קשרים
+  business   Business    @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  customer   Customer    @relation(fields: [customerId], references: [id])
+  orderItems OrderItem[]
+
+  @@unique([businessId, orderNumber])
+  @@map("orders")
+}
+
+enum OrderType {
+  DINE_IN // שבת במקום
+  TAKEAWAY // טייקאווי
+}
+
+enum OrderStatus {
+  PENDING // ממתינה
+  CONFIRMED // אושרה
+  PREPARING // בהכנה
+  READY // מוכנה
+  DELIVERED // נמסרה
+  CANCELLED // בוטלה
+}
+
+// פריטים בהזמנה
+model OrderItem {
+  id         String   @id @default(cuid())
+  orderId    String
+  productId  String
+  quantity   Int
+  unitPrice  Float
+  totalPrice Float
+  notes      String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  // קשרים
+  order            Order             @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product          Product           @relation(fields: [productId], references: [id])
+  orderItemOptions OrderItemOption[]
+
+  @@map("order_items")
+}
+
+// תוספות שנבחרו לפריטים בהזמנה
+model OrderItemOption {
+  id                   String   @id @default(cuid())
+  orderItemId          String
+  productOptionId      String
+  productOptionValueId String?
+  textValue            String? // לתוספות טקסט חופשי
+  additionalPrice      Float    @default(0)
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  // קשרים
+  orderItem          OrderItem           @relation(fields: [orderItemId], references: [id], onDelete: Cascade)
+  productOption      ProductOption       @relation(fields: [productOptionId], references: [id])
+  productOptionValue ProductOptionValue? @relation(fields: [productOptionValueId], references: [id])
+
+  @@map("order_item_options")
+}
+
+// לוג פעולות (אופציונלי)
+model ActivityLog {
+  id         String   @id @default(cuid())
+  businessId String
+  userId     String?
+  action     String
+  details    Json?
+  ipAddress  String?
+  userAgent  String?
+  createdAt  DateTime @default(now())
+
+  @@map("activity_logs")
+}
