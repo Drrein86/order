@@ -1,0 +1,10 @@
+{
+  "name": "מסעדת דמו",
+  "email": "demo@restaurant.com",
+  "phone": "050-1234567",
+  "address": "רחוב ראשי 123, תל אביב",
+  "description": "מסעדה לדוגמה לבדיקת המערכת",
+  "adminName": "מנהל ראשי",
+  "adminEmail": "admin@restaurant.com",
+  "adminPassword": "123456"
+} 
