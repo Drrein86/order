@@ -21,15 +21,42 @@ git push origin main
 3. בחר את הריפוזיטורי שלך
 4. Vercel יזהה אוטומטית שזה Next.js
 
-### 3. הגדרת משתני סביבה
+### 3. הגדרת משתני סביבה ב-Vercel Dashboard
 
-ב-Vercel Dashboard > Settings > Environment Variables הוסף:
+**חשוב מאוד!** אחרי יצירת הפרויקט, היכנס ל-Settings > Environment Variables והוסף:
+
+#### משתנים נדרשים:
 
 ```
 DATABASE_URL = <Railway PostgreSQL URL>
 NEXTAUTH_SECRET = <your-secret-key>
 NEXTAUTH_URL = https://your-app.vercel.app
 ```
+
+#### איך להגדיר:
+
+1. **DATABASE_URL**: העתק את ה-URL מ-Railway
+
+   ```
+   DATABASE_URL = postgresql://username:password@hostname:port/database
+   ```
+
+2. **NEXTAUTH_SECRET**: צור מפתח סודי (לפחות 32 תווים)
+
+   ```
+   NEXTAUTH_SECRET = your-super-secret-key-here-32-chars-minimum
+   ```
+
+3. **NEXTAUTH_URL**: ה-URL של האפליקציה שלך
+   ```
+   NEXTAUTH_URL = https://your-app-name.vercel.app
+   ```
+
+#### הגדרות נוספות:
+
+- **Production**: ✅ (סמן)
+- **Preview**: ✅ (סמן)
+- **Development**: ❌ (אל תסמן)
 
 ### 4. הגדרת מסד נתונים
 
@@ -77,3 +104,20 @@ DATABASE_URL="<railway-url>" npx prisma db pull
 
 - בדוק שה-Node.js version תואם (18+)
 - בדוק שכל התלויות מותקנות
+
+### שגיאת Environment Variables
+
+אם אתה מקבל שגיאה על משתני סביבה:
+
+1. וודא שהגדרת את כל המשתנים ב-Vercel Dashboard
+2. וודא שה-URL של Railway נכון
+3. וודא שה-NEXTAUTH_SECRET הוא לפחות 32 תווים
+4. וודא שה-NEXTAUTH_URL מתחיל ב-https://
+
+## 📞 תמיכה
+
+אם אתה נתקל בבעיות:
+
+1. בדוק את הלוגים ב-Vercel Dashboard
+2. וודא שכל משתני הסביבה מוגדרים נכון
+3. בדוק שהמסד נתונים פעיל ב-Railway
