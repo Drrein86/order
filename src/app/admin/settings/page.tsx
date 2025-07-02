@@ -80,11 +80,14 @@ export default function AdminSettingsPage() {
       setIsLoading(true);
 
       // טעינת פרטי עסק
+      console.log("Loading business with ID:", session?.user.businessId);
       const businessRes = await fetch(
         `/api/businesses/${session?.user.businessId}`
       );
       if (businessRes.ok) {
-        const businessData = await businessRes.json();
+        const response = await businessRes.json();
+        const businessData = response.data || response;
+        console.log("Business data loaded:", businessData);
         setBusiness(businessData);
         setFormData({
           name: businessData.name || "",
@@ -206,10 +209,17 @@ export default function AdminSettingsPage() {
 
       if (response.ok) {
         const data = await response.json();
+        console.log("Video uploaded successfully:", data);
         setFormData((prev) => ({
           ...prev,
           backgroundVideo: data.url,
         }));
+        setSuccess("הוידאו הועלה בהצלחה!");
+        setTimeout(() => setSuccess(""), 3000);
+      } else {
+        const errorData = await response.json();
+        console.error("Video upload error:", errorData);
+        setError("שגיאה בהעלאת הוידאו");
       }
     } catch (error) {
       console.error("Error uploading video:", error);
@@ -249,10 +259,19 @@ export default function AdminSettingsPage() {
   };
 
   const handleSave = async () => {
-    if (!business) return;
+    if (!business || !business.id) {
+      setError("שגיאה: לא נמצא מזהה עסק");
+      return;
+    }
 
     setSaving(true);
+    setError("");
+    setSuccess("");
+
     try {
+      console.log("Saving business with ID:", business.id);
+      console.log("Form data:", formData);
+
       const response = await fetch(`/api/businesses/${business.id}`, {
         method: "PUT",
         headers: {
@@ -262,12 +281,19 @@ export default function AdminSettingsPage() {
       });
 
       if (response.ok) {
-        alert("ההגדרות נשמרו בהצלחה!");
+        setSuccess("ההגדרות נשמרו בהצלחה!");
         await loadData();
+        setTimeout(() => setSuccess(""), 3000);
+      } else {
+        const errorData = await response.json();
+        console.error("API Error:", errorData);
+        setError(
+          `שגיאה בשמירת ההגדרות: ${errorData.error || "שגיאה לא ידועה"}`
+        );
       }
     } catch (error) {
       console.error("Error saving settings:", error);
-      alert("שגיאה בשמירת ההגדרות");
+      setError("שגיאה בשמירת ההגדרות");
     } finally {
       setSaving(false);
     }
@@ -842,13 +868,6 @@ export default function AdminSettingsPage() {
                       />
                     </div>
                   )}
-
-                  <button
-                    type="submit"
-                    className="bg-blue-600 hover:bg-blue-700 text-white px-4 sm:px-6 py-2 rounded-lg transition-colors text-sm sm:text-base"
-                  >
-                    שמור הגדרות התראות
-                  </button>
                 </form>
               </div>
             )}
@@ -891,13 +910,6 @@ export default function AdminSettingsPage() {
                       זה הקישור שלקוחות ישתמשו בו כדי להזמין ממך
                     </p>
                   </div>
-
-                  <button
-                    type="submit"
-                    className="bg-blue-600 hover:bg-blue-700 text-white px-4 sm:px-6 py-2 rounded-lg transition-colors text-sm sm:text-base"
-                  >
-                    שמור הגדרות הזמנות
-                  </button>
                 </form>
               </div>
             )}

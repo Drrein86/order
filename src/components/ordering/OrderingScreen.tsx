@@ -91,10 +91,26 @@ export function OrderingScreen({
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
+    <div className="min-h-screen flex flex-col relative overflow-hidden">
+      {/* וידאו רקע */}
+      {business.backgroundVideo && (
+        <div className="fixed inset-0 z-0">
+          <video
+            src={business.backgroundVideo}
+            className="w-full h-full object-cover"
+            autoPlay
+            loop
+            muted
+            playsInline
+          />
+          {/* שכבת כהייה */}
+          <div className="absolute inset-0 bg-black/30"></div>
+        </div>
+      )}
+
       {/* כותרת עליונה */}
       <header
-        className="bg-white shadow-sm border-b-4 sticky top-0 z-30"
+        className="bg-white/95 backdrop-blur-sm shadow-sm border-b-4 sticky top-0 z-30"
         style={{ borderBottomColor: business.colors.primary }}
       >
         <div className="max-w-7xl mx-auto px-3 sm:px-4 py-3 sm:py-4 flex items-center justify-between">
@@ -188,7 +204,7 @@ export function OrderingScreen({
         </div>
 
         {/* פאנל קטגוריות - צד ימין קטן */}
-        <div className="lg:w-64 bg-white shadow-lg overflow-y-auto order-2 lg:order-2">
+        <div className="lg:w-64 bg-white/95 backdrop-blur-sm shadow-lg overflow-y-auto order-2 lg:order-2">
           <CategoriesPanel
             categories={categories}
             selectedCategoryId={selectedCategoryId}
@@ -234,7 +250,7 @@ export function OrderingScreen({
       {/* תחתית קבועה עם סיכום */}
       {cartItemsCount > 0 && (
         <div
-          className="sticky bottom-0 bg-white border-t-4 shadow-lg p-3 sm:p-4 z-20"
+          className="sticky bottom-0 bg-white/95 backdrop-blur-sm border-t-4 shadow-lg p-3 sm:p-4 z-20"
           style={{ borderTopColor: business.colors.primary }}
         >
           <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-0">

@@ -28,7 +28,7 @@ export function CartPanel({
 
   return (
     <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-3 sm:p-4">
-      <div className="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-hidden">
+      <div className="bg-white/95 backdrop-blur-sm rounded-xl max-w-2xl w-full max-h-[90vh] overflow-hidden">
         {/* כותרת */}
         <div className="bg-gray-50 px-4 sm:px-6 py-3 sm:py-4 border-b flex items-center justify-between">
           <h2 className="text-lg sm:text-2xl font-bold text-gray-800">

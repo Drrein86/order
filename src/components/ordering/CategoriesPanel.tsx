@@ -16,7 +16,7 @@ export function CategoriesPanel({
   businessColors,
 }: CategoriesPanelProps) {
   return (
-    <div className="p-2 sm:p-3">
+    <div className="p-2 sm:p-3 bg-transparent">
       <h2 className="text-sm sm:text-base font-bold mb-2 sm:mb-3 text-gray-800">
         קטגוריות
       </h2>

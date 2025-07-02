@@ -58,4 +58,67 @@ export async function GET(
       { status: 500 }
     )
   }
+}
+
+export async function PUT(
+  request: NextRequest,
+  { params }: { params: Promise<{ businessId: string }> }
+) {
+  try {
+    const { businessId } = await params
+    const body = await request.json()
+
+    // עדכון פרטי העסק
+    const updatedBusiness = await prisma.business.update({
+      where: { id: businessId },
+      data: {
+        name: body.name,
+        logo: body.logo,
+        businessSettings: {
+          upsert: {
+            where: { businessId: businessId },
+            create: {
+              primaryColor: body.colors?.primary || '#3B82F6',
+              secondaryColor: body.colors?.secondary || '#F59E0B',
+              accentColor: body.colors?.accent || '#10B981',
+              textColor: body.colors?.text || '#1F2937',
+              backgroundVideo: body.backgroundVideo,
+              whatsappNumber: body.settings?.whatsappNumber,
+              emailEnabled: body.settings?.emailEnabled ?? true,
+              whatsappEnabled: body.settings?.whatsappEnabled ?? true,
+              printingEnabled: body.settings?.printingEnabled ?? true,
+              isOrderingOpen: body.settings?.isOrderingOpen ?? true
+            },
+            update: {
+              primaryColor: body.colors?.primary || '#3B82F6',
+              secondaryColor: body.colors?.secondary || '#F59E0B',
+              accentColor: body.colors?.accent || '#10B981',
+              textColor: body.colors?.text || '#1F2937',
+              backgroundVideo: body.backgroundVideo,
+              whatsappNumber: body.settings?.whatsappNumber,
+              emailEnabled: body.settings?.emailEnabled ?? true,
+              whatsappEnabled: body.settings?.whatsappEnabled ?? true,
+              printingEnabled: body.settings?.printingEnabled ?? true,
+              isOrderingOpen: body.settings?.isOrderingOpen ?? true
+            }
+          }
+        }
+      },
+      include: {
+        businessSettings: true
+      }
+    })
+
+    return NextResponse.json({
+      success: true,
+      data: updatedBusiness
+    })
+
+  } catch (error) {
+    console.error('Error updating business:', error)
+    return NextResponse.json(
+      { success: false, error: 'שגיאה בעדכון נתוני העסק' },
+      { status: 500 }
+    )
+  }
 } 

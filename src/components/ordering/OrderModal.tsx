@@ -84,7 +84,7 @@ export function OrderModal({
 
   return (
     <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-3 sm:p-4">
-      <div className="bg-white rounded-xl max-w-lg w-full max-h-[90vh] overflow-hidden">
+      <div className="bg-white/95 backdrop-blur-sm rounded-xl max-w-lg w-full max-h-[90vh] overflow-hidden">
         {/* כותרת */}
         <div className="bg-green-50 px-4 sm:px-6 py-3 sm:py-4 border-b">
           <div className="flex items-center justify-between">

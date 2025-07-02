@@ -269,7 +269,7 @@ export function ProductsPanel({ products, onAddToCart }: ProductsPanelProps) {
   };
 
   return (
-    <div className="flex-1 overflow-y-auto p-3 sm:p-6">
+    <div className="flex-1 overflow-y-auto p-3 sm:p-6 bg-white/95 backdrop-blur-sm">
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
         {products.map((product, index) => (
           <div
