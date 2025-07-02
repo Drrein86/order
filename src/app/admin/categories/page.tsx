@@ -27,6 +27,7 @@ export default function AdminCategoriesPage() {
     name: "",
     description: "",
     order: 0,
+    image: "",
   });
 
   useEffect(() => {
@@ -134,7 +135,7 @@ export default function AdminCategoriesPage() {
         }
 
         // איפוס הטופס
-        setFormData({ name: "", description: "", order: 0 });
+        setFormData({ name: "", description: "", order: 0, image: "" });
         setIsCreating(false);
         setEditingCategory(null);
         setError("");
@@ -153,6 +154,7 @@ export default function AdminCategoriesPage() {
       name: category.name,
       description: category.description || "",
       order: category.order,
+      image: category.image || "",
     });
     setIsCreating(true);
   };
@@ -179,7 +181,7 @@ export default function AdminCategoriesPage() {
   };
 
   const cancelEdit = () => {
-    setFormData({ name: "", description: "", order: 0 });
+    setFormData({ name: "", description: "", order: 0, image: "" });
     setIsCreating(false);
     setEditingCategory(null);
     setError("");
@@ -297,6 +299,45 @@ export default function AdminCategoriesPage() {
                   placeholder="1"
                   min="0"
                 />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  תמונה
+                </label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={async (e) => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+                    const form = new FormData();
+                    form.append("image", file);
+                    const res = await fetch("/api/upload/category-image", {
+                      method: "POST",
+                      body: form,
+                    });
+                    const data = await res.json();
+                    if (data.success && data.url) {
+                      setFormData((prev) => ({ ...prev, image: data.url }));
+                    } else {
+                      alert(data.error || "שגיאה בהעלאת התמונה");
+                    }
+                  }}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+                {formData.image && (
+                  <div className="mt-2">
+                    <img
+                      src={formData.image}
+                      alt="תמונה מקדימה"
+                      className="w-32 h-32 object-cover rounded-lg border"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).style.display = "none";
+                      }}
+                    />
+                  </div>
+                )}
               </div>
 
               <div className="md:col-span-3 flex gap-3">

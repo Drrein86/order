@@ -157,19 +157,73 @@ export function OrderingScreen({
         </div>
       </header>
 
-      {/* תוכן ראשי */}
-      <div className="flex-1 flex flex-row-reverse lg:flex-row-reverse">
-        {/* פאנל קטגוריות - צד ימין */}
-        <div className="lg:w-56 w-full max-w-xs bg-white/95 backdrop-blur-sm shadow-lg overflow-y-auto border-l border-gray-200 z-10">
-          <CategoriesPanel
-            categories={categories}
-            selectedCategoryId={selectedCategoryId}
-            onCategorySelect={setSelectedCategoryId}
-            businessColors={business.colors}
-          />
+      {/* סרגל קטגוריות אופקי - מובייל בלבד */}
+      <div className="sm:hidden bg-white border-b border-gray-200 shadow-sm">
+        <div className="overflow-x-auto">
+          <div className="flex gap-3 px-4 py-3 min-w-max">
+            {categories.map((category) => (
+              <button
+                key={category.id}
+                onClick={() => setSelectedCategoryId(category.id)}
+                className={`
+                  flex flex-col items-center gap-1 px-3 py-2 rounded-lg transition-all duration-200 whitespace-nowrap
+                  ${
+                    selectedCategoryId === category.id
+                      ? "bg-blue-100 text-blue-700 border-2 border-blue-300"
+                      : "bg-gray-50 text-gray-700 hover:bg-gray-100"
+                  }
+                `}
+              >
+                <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden relative">
+                  {category.image && category.image.length > 0 ? (
+                    <img
+                      src={category.image}
+                      alt={category.name}
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.style.display = "none";
+                        const fallback =
+                          target.nextElementSibling as HTMLElement;
+                        if (fallback) {
+                          fallback.style.display = "flex";
+                        }
+                      }}
+                    />
+                  ) : null}
+                  <div
+                    className={`w-full h-full flex items-center justify-center text-lg font-bold ${
+                      category.image && category.image.length > 0
+                        ? "hidden"
+                        : "flex"
+                    } ${
+                      selectedCategoryId === category.id
+                        ? "bg-blue-400 text-white"
+                        : "bg-gradient-to-br from-gray-200 to-gray-300 text-gray-600"
+                    }`}
+                    style={{
+                      display:
+                        category.image && category.image.length > 0
+                          ? "none"
+                          : "flex",
+                    }}
+                  >
+                    {category.name.charAt(0).toUpperCase()}
+                  </div>
+                </div>
+                <span className="text-xs font-medium text-center max-w-16 truncate">
+                  {category.name}
+                </span>
+              </button>
+            ))}
+          </div>
         </div>
+      </div>
+
+      {/* תוכן ראשי */}
+      <div className="flex-1 flex flex-row-reverse">
         {/* פאנל מוצרים */}
-        <div className="flex-1 overflow-y-auto bg-white">
+        <div className="order-1 flex-1 overflow-y-auto bg-white">
           <ProductsPanel
             products={selectedCategory?.products || []}
             onAddToCart={(product, options, quantity) => {
@@ -189,32 +243,46 @@ export function OrderingScreen({
                       additionalPrice: val.additionalPrice || 0,
                     });
                   });
-                } else if (option.type === "HALF_AND_HALF" && value) {
-                  if (value.left) {
+                } else if (
+                  option.type === "HALF_AND_HALF" &&
+                  value &&
+                  typeof value === "object"
+                ) {
+                  const halfValue = value as { left?: any; right?: any };
+                  if (halfValue.left) {
                     selectedOptions.push({
                       optionId,
                       optionName: option.name + " (שמאל)",
-                      valueId: value.left.id,
-                      valueName: value.left.name,
-                      additionalPrice: value.left.additionalPrice || 0,
+                      valueId: halfValue.left.id,
+                      valueName: halfValue.left.name,
+                      additionalPrice: halfValue.left.additionalPrice || 0,
                     });
                   }
-                  if (value.right) {
+                  if (halfValue.right) {
                     selectedOptions.push({
                       optionId,
                       optionName: option.name + " (ימין)",
-                      valueId: value.right.id,
-                      valueName: value.right.name,
-                      additionalPrice: value.right.additionalPrice || 0,
+                      valueId: halfValue.right.id,
+                      valueName: halfValue.right.name,
+                      additionalPrice: halfValue.right.additionalPrice || 0,
                     });
                   }
-                } else if (typeof value === "object" && value !== null) {
+                } else if (
+                  typeof value === "object" &&
+                  value !== null &&
+                  "id" in value
+                ) {
+                  const objValue = value as {
+                    id: string;
+                    name: string;
+                    additionalPrice?: number;
+                  };
                   selectedOptions.push({
                     optionId,
                     optionName: option.name,
-                    valueId: value.id,
-                    valueName: value.name,
-                    additionalPrice: value.additionalPrice || 0,
+                    valueId: objValue.id,
+                    valueName: objValue.name,
+                    additionalPrice: objValue.additionalPrice || 0,
                   });
                 } else if (typeof value === "string") {
                   selectedOptions.push({
@@ -233,6 +301,19 @@ export function OrderingScreen({
               };
               addToCart(cartItem);
             }}
+          />
+        </div>
+        {/* פאנל קטגוריות - צד ימין */}
+        <div
+          className="order-2 w-20 lg:w-56 max-w-xs h-screen overflow-y-auto bg-white/95 backdrop-blur-sm shadow-lg border-l border-gray-200 z-10 hidden sm:block"
+          style={{ minWidth: "80px" }}
+        >
+          <CategoriesPanel
+            categories={categories}
+            selectedCategoryId={selectedCategoryId}
+            onCategorySelect={setSelectedCategoryId}
+            businessColors={business.colors}
+            hideTitleOnMobile={true}
           />
         </div>
       </div>
@@ -303,6 +384,35 @@ export function OrderingScreen({
           </div>
         </div>
       )}
+
+      {/* סרגל ניווט תחתון - מובייל בלבד */}
+      <div className="sm:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-30">
+        <div className="flex justify-around items-center py-2">
+          <button
+            onClick={onBack}
+            className="flex flex-col items-center gap-1 p-2 rounded-lg hover:bg-gray-50 transition-colors"
+          >
+            <span className="text-2xl">🏠</span>
+            <span className="text-xs font-medium text-gray-600">בית</span>
+          </button>
+          <button className="flex flex-col items-center gap-1 p-2 rounded-lg bg-blue-50 text-blue-600">
+            <span className="text-2xl">🍽️</span>
+            <span className="text-xs font-medium">תפריט</span>
+          </button>
+          <button
+            onClick={() => setIsCartOpen(true)}
+            className="flex flex-col items-center gap-1 p-2 rounded-lg hover:bg-gray-50 transition-colors relative"
+          >
+            <span className="text-2xl">🛒</span>
+            <span className="text-xs font-medium text-gray-600">סל</span>
+            {cartItemsCount > 0 && (
+              <span className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold">
+                {cartItemsCount}
+              </span>
+            )}
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
