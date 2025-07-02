@@ -1,19 +1,19 @@
-import type { 
-  Business, 
-  BusinessUser, 
-  BusinessSettings, 
-  Category, 
-  Product, 
-  ProductOption, 
+import type {
+  Business,
+  Category,
+  Product,
+  ProductOption,
   ProductOptionValue,
-  Customer,
   Order,
   OrderItem,
   OrderItemOption,
+  BusinessUser,
+  BusinessUserRole,
+  BusinessSettings,
+  Customer,
   OrderType,
   OrderStatus,
   ProductOptionType,
-  BusinessUserRole
 } from '../generated/prisma'
 
 // Extended types with relations
