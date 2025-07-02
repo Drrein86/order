@@ -29,6 +29,10 @@ export async function GET(
     const businessConfig = {
       id: business.id,
       name: business.name,
+      email: business.email,
+      phone: business.phone,
+      address: business.address,
+      description: business.description,
       logo: business.logo,
       backgroundVideo: business.businessSettings?.backgroundVideo,
       colors: {
@@ -73,6 +77,10 @@ export async function PUT(
       where: { id: businessId },
       data: {
         name: body.name,
+        email: body.email,
+        phone: body.phone,
+        address: body.address,
+        description: body.description,
         logo: body.logo,
         businessSettings: {
           upsert: {

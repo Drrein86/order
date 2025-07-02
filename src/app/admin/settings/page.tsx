@@ -47,6 +47,10 @@ export default function AdminSettingsPage() {
   // Form state
   const [formData, setFormData] = useState({
     name: "",
+    email: "",
+    phone: "",
+    address: "",
+    description: "",
     logo: "",
     backgroundVideo: "",
     colors: {
@@ -91,6 +95,10 @@ export default function AdminSettingsPage() {
         setBusiness(businessData);
         setFormData({
           name: businessData.name || "",
+          email: businessData.email || "",
+          phone: businessData.phone || "",
+          address: businessData.address || "",
+          description: businessData.description || "",
           logo: businessData.logo || "",
           backgroundVideo: businessData.backgroundVideo || "",
           colors: businessData.colors || {
@@ -497,7 +505,63 @@ export default function AdminSettingsPage() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
+                        אימייל
+                      </label>
+                      <input
+                        type="email"
+                        value={formData.email}
+                        onChange={(e) =>
+                          setFormData((prev) => ({
+                            ...prev,
+                            email: e.target.value,
+                          }))
+                        }
+                        className="w-full px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        placeholder="info@business.com"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
                         טלפון
+                      </label>
+                      <input
+                        type="tel"
+                        value={formData.phone}
+                        onChange={(e) =>
+                          setFormData((prev) => ({
+                            ...prev,
+                            phone: e.target.value,
+                          }))
+                        }
+                        className="w-full px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        placeholder="050-1234567"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        כתובת
+                      </label>
+                      <input
+                        type="text"
+                        value={formData.address}
+                        onChange={(e) =>
+                          setFormData((prev) => ({
+                            ...prev,
+                            address: e.target.value,
+                          }))
+                        }
+                        className="w-full px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        placeholder="רחוב ירושלים 1, תל אביב"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        מספר WhatsApp
                       </label>
                       <input
                         type="tel"
@@ -515,22 +579,6 @@ export default function AdminSettingsPage() {
                         placeholder="050-1234567"
                       />
                     </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        כתובת
-                      </label>
-                      <input
-                        type="text"
-                        value=""
-                        className="w-full px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        placeholder="רחוב ירושלים 1, תל אביב"
-                        disabled
-                      />
-                      <p className="text-xs sm:text-sm text-gray-500 mt-1">
-                        כתובת תתווסף בקרוב
-                      </p>
-                    </div>
                   </div>
 
                   <div>
@@ -538,15 +586,17 @@ export default function AdminSettingsPage() {
                       תיאור העסק
                     </label>
                     <textarea
-                      value=""
+                      value={formData.description}
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          description: e.target.value,
+                        }))
+                      }
                       rows={3}
                       className="w-full px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       placeholder="תיאור קצר על העסק..."
-                      disabled
                     />
-                    <p className="text-xs sm:text-sm text-gray-500 mt-1">
-                      תיאור העסק יתווסף בקרוב
-                    </p>
                   </div>
 
                   <button

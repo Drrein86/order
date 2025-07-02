@@ -87,87 +87,45 @@ export function WelcomeScreen({
           </p>
         </div>
 
-        {/* כרטיסי בחירה */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 md:gap-8 max-w-4xl w-full px-4">
+        {/* כפתורי בחירה */}
+        <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 max-w-2xl w-full px-4">
           {/* שבת במקום */}
-          <div
+          <button
             onClick={() => setSelectedType("DINE_IN")}
             className={`
-              bg-white/95 backdrop-blur-md rounded-2xl sm:rounded-3xl p-6 sm:p-8 cursor-pointer
-              transform transition-all duration-500 hover:scale-105 hover:shadow-2xl
-              border border-white/20 min-h-[280px] sm:min-h-[320px] flex flex-col justify-center
+              bg-white/20 backdrop-blur-sm rounded-xl p-6 sm:p-8 cursor-pointer
+              transform transition-all duration-300 hover:scale-105
+              border border-white/30 min-h-[120px] flex items-center justify-center
               ${
                 selectedType === "DINE_IN"
-                  ? "ring-4 ring-green-500 shadow-2xl scale-105"
-                  : "hover:shadow-xl"
+                  ? "ring-2 ring-white/50 bg-white/30"
+                  : "hover:bg-white/30"
               }
             `}
-            style={{
-              boxShadow:
-                selectedType === "DINE_IN"
-                  ? `0 25px 50px rgba(0,0,0,0.3), 0 0 0 1px ${
-                      business.colors?.primary || "#3B82F6"
-                    }`
-                  : "0 10px 30px rgba(0,0,0,0.1)",
-            }}
           >
-            <div className="text-center">
-              <div className="text-6xl sm:text-7xl md:text-8xl mb-4 sm:mb-6 animate-bounce">
-                🍽️
-              </div>
-              <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-3 sm:mb-4">
-                שבת במקום
-              </h2>
-              <p className="text-gray-600 leading-relaxed text-base sm:text-lg mb-4">
-                ליהנות מהאוכל שלנו כאן במסעדה עם שירות מלא וחוויה מושלמת
-              </p>
-              <div className="text-xs sm:text-sm text-gray-500 space-y-1">
-                <div>⭐ שירות מלא</div>
-                <div>🪑 מקום שמור</div>
-                <div>🎵 מוזיקת רקע</div>
-              </div>
-            </div>
-          </div>
+            <span className="text-2xl sm:text-3xl font-bold text-white">
+              לשבת
+            </span>
+          </button>
 
-          {/* טייקאווי */}
-          <div
+          {/* לקחת */}
+          <button
             onClick={() => setSelectedType("TAKEAWAY")}
             className={`
-              bg-white/95 backdrop-blur-md rounded-2xl sm:rounded-3xl p-6 sm:p-8 cursor-pointer
-              transform transition-all duration-500 hover:scale-105 hover:shadow-2xl
-              border border-white/20 min-h-[280px] sm:min-h-[320px] flex flex-col justify-center
+              bg-white/20 backdrop-blur-sm rounded-xl p-6 sm:p-8 cursor-pointer
+              transform transition-all duration-300 hover:scale-105
+              border border-white/30 min-h-[120px] flex items-center justify-center
               ${
                 selectedType === "TAKEAWAY"
-                  ? "ring-4 ring-blue-500 shadow-2xl scale-105"
-                  : "hover:shadow-xl"
+                  ? "ring-2 ring-white/50 bg-white/30"
+                  : "hover:bg-white/30"
               }
             `}
-            style={{
-              boxShadow:
-                selectedType === "TAKEAWAY"
-                  ? `0 25px 50px rgba(0,0,0,0.3), 0 0 0 1px ${
-                      business.colors?.secondary || "#10B981"
-                    }`
-                  : "0 10px 30px rgba(0,0,0,0.1)",
-            }}
           >
-            <div className="text-center">
-              <div className="text-6xl sm:text-7xl md:text-8xl mb-4 sm:mb-6 animate-pulse">
-                📦
-              </div>
-              <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-3 sm:mb-4">
-                לקחת
-              </h2>
-              <p className="text-gray-600 leading-relaxed text-base sm:text-lg mb-4">
-                להזמין ולקחת הביתה מהר, נוח ובטעם מושלם
-              </p>
-              <div className="text-xs sm:text-sm text-gray-500 space-y-1">
-                <div>⚡ הכנה מהירה</div>
-                <div>📱 הזמנה דיגיטלית</div>
-                <div>🚗 איסוף נוח</div>
-              </div>
-            </div>
-          </div>
+            <span className="text-2xl sm:text-3xl font-bold text-white">
+              לקחת
+            </span>
+          </button>
         </div>
 
         {/* כפתור המשך */}

@@ -171,7 +171,7 @@ export function OrderingScreen({
       {/* תוכן ראשי */}
       <div className="flex-1 flex flex-col lg:flex-row">
         {/* פאנל מוצרים - צד שמאל גדול */}
-        <div className="flex-1 overflow-y-auto order-1 lg:order-1">
+        <div className="flex-1 overflow-y-auto order-2 lg:order-1">
           <ProductsPanel
             products={selectedCategory?.products || []}
             onAddToCart={(product, options, quantity) => {
@@ -204,7 +204,7 @@ export function OrderingScreen({
         </div>
 
         {/* פאנל קטגוריות - צד ימין קטן */}
-        <div className="lg:w-64 bg-white/95 backdrop-blur-sm shadow-lg overflow-y-auto order-2 lg:order-2">
+        <div className="lg:w-48 bg-white/95 backdrop-blur-sm shadow-lg overflow-y-auto order-1 lg:order-2">
           <CategoriesPanel
             categories={categories}
             selectedCategoryId={selectedCategoryId}
