@@ -4,6 +4,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { BusinessConfig } from "@/lib/types";
 
 interface BusinessSettings {
   businessId: string;
@@ -33,12 +34,35 @@ interface Business {
 export default function AdminSettingsPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
-  const [business, setBusiness] = useState<Business | null>(null);
+  const [business, setBusiness] = useState<BusinessConfig | null>(null);
   const [settings, setSettings] = useState<BusinessSettings | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [activeTab, setActiveTab] = useState("business");
+  const [uploadingVideo, setUploadingVideo] = useState(false);
+  const [uploadingLogo, setUploadingLogo] = useState(false);
+  const [saving, setSaving] = useState(false);
+
+  // Form state
+  const [formData, setFormData] = useState({
+    name: "",
+    logo: "",
+    backgroundVideo: "",
+    colors: {
+      primary: "#3B82F6",
+      secondary: "#10B981",
+      accent: "#F59E0B",
+      text: "#1F2937",
+    },
+    settings: {
+      whatsappNumber: "",
+      emailEnabled: true,
+      whatsappEnabled: true,
+      printingEnabled: true,
+      isOrderingOpen: true,
+    },
+  });
 
   useEffect(() => {
     if (status === "loading") return;
@@ -62,6 +86,24 @@ export default function AdminSettingsPage() {
       if (businessRes.ok) {
         const businessData = await businessRes.json();
         setBusiness(businessData);
+        setFormData({
+          name: businessData.name || "",
+          logo: businessData.logo || "",
+          backgroundVideo: businessData.backgroundVideo || "",
+          colors: businessData.colors || {
+            primary: "#3B82F6",
+            secondary: "#10B981",
+            accent: "#F59E0B",
+            text: "#1F2937",
+          },
+          settings: businessData.settings || {
+            whatsappNumber: "",
+            emailEnabled: true,
+            whatsappEnabled: true,
+            printingEnabled: true,
+            isOrderingOpen: true,
+          },
+        });
       }
 
       // סימולציה של הגדרות
@@ -143,6 +185,91 @@ export default function AdminSettingsPage() {
     } catch (err) {
       console.error("Error toggling ordering:", err);
       setError("שגיאה בעדכון סטטוס הזמנות");
+    }
+  };
+
+  const handleVideoUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    setUploadingVideo(true);
+    const formData = new FormData();
+    formData.append("video", file);
+
+    try {
+      const response = await fetch("/api/upload/video", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setFormData((prev) => ({
+          ...prev,
+          backgroundVideo: data.url,
+        }));
+      }
+    } catch (error) {
+      console.error("Error uploading video:", error);
+    } finally {
+      setUploadingVideo(false);
+    }
+  };
+
+  const handleLogoUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    setUploadingLogo(true);
+    const formData = new FormData();
+    formData.append("logo", file);
+
+    try {
+      const response = await fetch("/api/upload/logo", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setFormData((prev) => ({
+          ...prev,
+          logo: data.url,
+        }));
+      }
+    } catch (error) {
+      console.error("Error uploading logo:", error);
+    } finally {
+      setUploadingLogo(false);
+    }
+  };
+
+  const handleSave = async () => {
+    if (!business) return;
+
+    setSaving(true);
+    try {
+      const response = await fetch(`/api/businesses/${business.id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        alert("ההגדרות נשמרו בהצלחה!");
+        await loadData();
+      }
+    } catch (error) {
+      console.error("Error saving settings:", error);
+      alert("שגיאה בשמירת ההגדרות");
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -280,11 +407,12 @@ export default function AdminSettingsPage() {
                       </label>
                       <input
                         type="text"
-                        value={business.name}
+                        value={formData.name}
                         onChange={(e) =>
-                          setBusiness((prev) =>
-                            prev ? { ...prev, name: e.target.value } : null
-                          )
+                          setFormData((prev) => ({
+                            ...prev,
+                            name: e.target.value,
+                          }))
                         }
                         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         required
@@ -293,19 +421,47 @@ export default function AdminSettingsPage() {
 
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
-                        אימיל *
+                        לוגו העסק
                       </label>
-                      <input
-                        type="email"
-                        value={business.email}
-                        onChange={(e) =>
-                          setBusiness((prev) =>
-                            prev ? { ...prev, email: e.target.value } : null
-                          )
-                        }
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        required
-                      />
+                      <div className="space-y-3">
+                        {formData.logo && (
+                          <div className="relative">
+                            <img
+                              src={formData.logo}
+                              alt="לוגו נוכחי"
+                              className="w-32 h-32 object-cover rounded-lg border-2 border-gray-200"
+                            />
+                            <button
+                              onClick={(e) => {
+                                e.preventDefault();
+                                setFormData((prev) => ({ ...prev, logo: "" }));
+                              }}
+                              className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm hover:bg-red-600"
+                            >
+                              ×
+                            </button>
+                          </div>
+                        )}
+                        <div className="flex items-center space-x-3">
+                          <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleLogoUpload}
+                            className="hidden"
+                            id="logo-upload"
+                            disabled={uploadingLogo}
+                          />
+                          <label
+                            htmlFor="logo-upload"
+                            className="cursor-pointer bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50"
+                          >
+                            {uploadingLogo ? "מעלה..." : "העלה לוגו חדש"}
+                          </label>
+                          <span className="text-sm text-gray-500">
+                            PNG, JPG עד 5MB
+                          </span>
+                        </div>
+                      </div>
                     </div>
                   </div>
 
@@ -316,11 +472,15 @@ export default function AdminSettingsPage() {
                       </label>
                       <input
                         type="tel"
-                        value={business.phone || ""}
+                        value={formData.settings.whatsappNumber || ""}
                         onChange={(e) =>
-                          setBusiness((prev) =>
-                            prev ? { ...prev, phone: e.target.value } : null
-                          )
+                          setFormData((prev) => ({
+                            ...prev,
+                            settings: {
+                              ...prev.settings,
+                              whatsappNumber: e.target.value,
+                            },
+                          }))
                         }
                         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         placeholder="050-1234567"
@@ -333,15 +493,14 @@ export default function AdminSettingsPage() {
                       </label>
                       <input
                         type="text"
-                        value={business.address || ""}
-                        onChange={(e) =>
-                          setBusiness((prev) =>
-                            prev ? { ...prev, address: e.target.value } : null
-                          )
-                        }
+                        value=""
                         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         placeholder="רחוב ירושלים 1, תל אביב"
+                        disabled
                       />
+                      <p className="text-sm text-gray-500 mt-1">
+                        כתובת תתווסף בקרוב
+                      </p>
                     </div>
                   </div>
 
@@ -350,16 +509,15 @@ export default function AdminSettingsPage() {
                       תיאור העסק
                     </label>
                     <textarea
-                      value={business.description || ""}
-                      onChange={(e) =>
-                        setBusiness((prev) =>
-                          prev ? { ...prev, description: e.target.value } : null
-                        )
-                      }
+                      value=""
                       rows={3}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       placeholder="תיאור קצר על העסק..."
+                      disabled
                     />
+                    <p className="text-sm text-gray-500 mt-1">
+                      תיאור העסק יתווסף בקרוב
+                    </p>
                   </div>
 
                   <button
@@ -388,25 +546,29 @@ export default function AdminSettingsPage() {
                       <div className="flex items-center gap-2">
                         <input
                           type="color"
-                          value={settings.primaryColor}
+                          value={formData.colors.primary}
                           onChange={(e) =>
-                            setSettings((prev) =>
-                              prev
-                                ? { ...prev, primaryColor: e.target.value }
-                                : null
-                            )
+                            setFormData((prev) => ({
+                              ...prev,
+                              colors: {
+                                ...prev.colors,
+                                primary: e.target.value,
+                              },
+                            }))
                           }
                           className="w-12 h-10 rounded border border-gray-300"
                         />
                         <input
                           type="text"
-                          value={settings.primaryColor}
+                          value={formData.colors.primary}
                           onChange={(e) =>
-                            setSettings((prev) =>
-                              prev
-                                ? { ...prev, primaryColor: e.target.value }
-                                : null
-                            )
+                            setFormData((prev) => ({
+                              ...prev,
+                              colors: {
+                                ...prev.colors,
+                                primary: e.target.value,
+                              },
+                            }))
                           }
                           className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         />
@@ -420,25 +582,29 @@ export default function AdminSettingsPage() {
                       <div className="flex items-center gap-2">
                         <input
                           type="color"
-                          value={settings.secondaryColor}
+                          value={formData.colors.secondary}
                           onChange={(e) =>
-                            setSettings((prev) =>
-                              prev
-                                ? { ...prev, secondaryColor: e.target.value }
-                                : null
-                            )
+                            setFormData((prev) => ({
+                              ...prev,
+                              colors: {
+                                ...prev.colors,
+                                secondary: e.target.value,
+                              },
+                            }))
                           }
                           className="w-12 h-10 rounded border border-gray-300"
                         />
                         <input
                           type="text"
-                          value={settings.secondaryColor}
+                          value={formData.colors.secondary}
                           onChange={(e) =>
-                            setSettings((prev) =>
-                              prev
-                                ? { ...prev, secondaryColor: e.target.value }
-                                : null
-                            )
+                            setFormData((prev) => ({
+                              ...prev,
+                              colors: {
+                                ...prev.colors,
+                                secondary: e.target.value,
+                              },
+                            }))
                           }
                           className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         />
@@ -452,13 +618,12 @@ export default function AdminSettingsPage() {
                     </label>
                     <input
                       type="url"
-                      value={settings.backgroundVideo || ""}
+                      value={formData.backgroundVideo || ""}
                       onChange={(e) =>
-                        setSettings((prev) =>
-                          prev
-                            ? { ...prev, backgroundVideo: e.target.value }
-                            : null
-                        )
+                        setFormData((prev) => ({
+                          ...prev,
+                          backgroundVideo: e.target.value,
+                        }))
                       }
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       placeholder="https://example.com/video.mp4"
@@ -499,13 +664,15 @@ export default function AdminSettingsPage() {
                       <label className="relative inline-flex items-center cursor-pointer">
                         <input
                           type="checkbox"
-                          checked={settings.emailEnabled}
+                          checked={formData.settings.emailEnabled}
                           onChange={(e) =>
-                            setSettings((prev) =>
-                              prev
-                                ? { ...prev, emailEnabled: e.target.checked }
-                                : null
-                            )
+                            setFormData((prev) => ({
+                              ...prev,
+                              settings: {
+                                ...prev.settings,
+                                emailEnabled: e.target.checked,
+                              },
+                            }))
                           }
                           className="sr-only peer"
                         />
@@ -525,13 +692,15 @@ export default function AdminSettingsPage() {
                       <label className="relative inline-flex items-center cursor-pointer">
                         <input
                           type="checkbox"
-                          checked={settings.whatsappEnabled}
+                          checked={formData.settings.whatsappEnabled}
                           onChange={(e) =>
-                            setSettings((prev) =>
-                              prev
-                                ? { ...prev, whatsappEnabled: e.target.checked }
-                                : null
-                            )
+                            setFormData((prev) => ({
+                              ...prev,
+                              settings: {
+                                ...prev.settings,
+                                whatsappEnabled: e.target.checked,
+                              },
+                            }))
                           }
                           className="sr-only peer"
                         />
@@ -551,13 +720,15 @@ export default function AdminSettingsPage() {
                       <label className="relative inline-flex items-center cursor-pointer">
                         <input
                           type="checkbox"
-                          checked={settings.printingEnabled}
+                          checked={formData.settings.printingEnabled}
                           onChange={(e) =>
-                            setSettings((prev) =>
-                              prev
-                                ? { ...prev, printingEnabled: e.target.checked }
-                                : null
-                            )
+                            setFormData((prev) => ({
+                              ...prev,
+                              settings: {
+                                ...prev.settings,
+                                printingEnabled: e.target.checked,
+                              },
+                            }))
                           }
                           className="sr-only peer"
                         />
@@ -566,20 +737,22 @@ export default function AdminSettingsPage() {
                     </div>
                   </div>
 
-                  {settings.whatsappEnabled && (
+                  {formData.settings.whatsappEnabled && (
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         מספר WhatsApp העסק
                       </label>
                       <input
                         type="tel"
-                        value={settings.whatsappNumber || ""}
+                        value={formData.settings.whatsappNumber || ""}
                         onChange={(e) =>
-                          setSettings((prev) =>
-                            prev
-                              ? { ...prev, whatsappNumber: e.target.value }
-                              : null
-                          )
+                          setFormData((prev) => ({
+                            ...prev,
+                            settings: {
+                              ...prev.settings,
+                              whatsappNumber: e.target.value,
+                            },
+                          }))
                         }
                         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         placeholder="050-1234567"
@@ -611,19 +784,10 @@ export default function AdminSettingsPage() {
                     </label>
                     <input
                       type="number"
-                      value={settings.orderStartNumber}
-                      onChange={(e) =>
-                        setSettings((prev) =>
-                          prev
-                            ? {
-                                ...prev,
-                                orderStartNumber: parseInt(e.target.value) || 1,
-                              }
-                            : null
-                        )
-                      }
+                      value="1"
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       min="1"
+                      disabled
                     />
                     <p className="text-sm text-gray-600 mt-1">
                       מספר זה יקבע את מספור ההזמנות הבא
@@ -654,6 +818,19 @@ export default function AdminSettingsPage() {
           </div>
         </div>
       </main>
+
+      {/* כפתור שמירה */}
+      <div className="mt-8 bg-white rounded-lg shadow-sm p-6">
+        <div className="flex justify-end space-x-4">
+          <button
+            onClick={handleSave}
+            disabled={isLoading}
+            className="bg-blue-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {isLoading ? "שומר..." : "שמור הגדרות"}
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
