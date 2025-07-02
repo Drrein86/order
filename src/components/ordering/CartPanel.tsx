@@ -30,16 +30,40 @@ export function CartPanel({
     <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-3 sm:p-4">
       <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden shadow-2xl">
         {/* כותרת משודרגת */}
-        <div className="bg-gradient-to-r from-blue-500 to-blue-600 px-6 py-4 flex items-center justify-between">
+        <div className="bg-gradient-to-r from-green-700 to-green-800 px-6 py-4 flex items-center justify-between">
           <h2 className="text-xl sm:text-2xl font-bold text-white flex items-center gap-3">
-            <span className="text-2xl sm:text-3xl">🛒</span>
+            <svg
+              className="w-8 h-8 sm:w-10 sm:h-10 text-white"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5m6-5v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6m8 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01"
+              />
+            </svg>
             סל הקניות
           </h2>
           <button
             onClick={onClose}
-            className="w-10 h-10 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center text-white text-xl transition-colors"
+            className="w-10 h-10 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center text-white transition-colors"
           >
-            ✕
+            <svg
+              className="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
           </button>
         </div>
 
@@ -47,7 +71,23 @@ export function CartPanel({
         <div className="p-4 sm:p-6 overflow-y-auto max-h-[60vh]">
           {cart.length === 0 ? (
             <div className="text-center py-12">
-              <div className="text-6xl mb-6">🛒</div>
+              <div className="flex justify-center mb-6">
+                <div className="w-20 h-20 bg-green-700 rounded-full flex items-center justify-center">
+                  <svg
+                    className="w-12 h-12 text-white"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5m6-5v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6m8 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01"
+                    />
+                  </svg>
+                </div>
+              </div>
               <h3 className="text-2xl font-bold text-gray-800 mb-3">הסל ריק</h3>
               <p className="text-gray-600 text-lg">
                 הוסף מוצרים לסל כדי להמשיך
@@ -134,9 +174,21 @@ export function CartPanel({
                           onClick={() =>
                             onUpdateQuantity(index, item.quantity - 1)
                           }
-                          className="w-8 h-8 sm:w-10 sm:h-10 bg-gray-200 hover:bg-gray-300 rounded-full flex items-center justify-center text-lg font-bold transition-colors"
+                          className="w-8 h-8 sm:w-10 sm:h-10 bg-green-700 hover:bg-green-800 rounded-full flex items-center justify-center transition-colors"
                         >
-                          -
+                          <svg
+                            className="w-4 h-4 sm:w-5 sm:h-5 text-white"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M20 12H4"
+                            />
+                          </svg>
                         </button>
                         <span className="font-bold text-lg sm:text-xl w-8 sm:w-10 text-center">
                           {item.quantity}
@@ -145,9 +197,21 @@ export function CartPanel({
                           onClick={() =>
                             onUpdateQuantity(index, item.quantity + 1)
                           }
-                          className="w-8 h-8 sm:w-10 sm:h-10 bg-gray-200 hover:bg-gray-300 rounded-full flex items-center justify-center text-lg font-bold transition-colors"
+                          className="w-8 h-8 sm:w-10 sm:h-10 bg-green-700 hover:bg-green-800 rounded-full flex items-center justify-center transition-colors"
                         >
-                          +
+                          <svg
+                            className="w-4 h-4 sm:w-5 sm:h-5 text-white"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M12 4v16m8-8H4"
+                            />
+                          </svg>
                         </button>
                       </div>
 
@@ -157,8 +221,21 @@ export function CartPanel({
 
                       <button
                         onClick={() => onRemoveItem(index)}
-                        className="text-red-500 hover:text-red-700 text-sm font-semibold bg-red-50 hover:bg-red-100 px-3 py-1 rounded-lg transition-colors"
+                        className="text-red-500 hover:text-red-700 text-sm font-semibold bg-red-50 hover:bg-red-100 px-3 py-2 rounded-lg transition-colors flex items-center gap-1"
                       >
+                        <svg
+                          className="w-4 h-4"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                          />
+                        </svg>
                         הסר
                       </button>
                     </div>
@@ -178,8 +255,21 @@ export function CartPanel({
               </span>
               <button
                 onClick={onClearCart}
-                className="text-red-500 hover:text-red-700 text-sm font-semibold bg-red-50 hover:bg-red-100 px-4 py-2 rounded-lg transition-colors"
+                className="text-red-500 hover:text-red-700 text-sm font-semibold bg-red-50 hover:bg-red-100 px-4 py-2 rounded-lg transition-colors flex items-center gap-2"
               >
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                  />
+                </svg>
                 נקה סל
               </button>
             </div>
@@ -187,14 +277,40 @@ export function CartPanel({
             <div className="flex gap-3">
               <button
                 onClick={onClose}
-                className="flex-1 px-6 py-4 border-2 border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-colors text-lg font-semibold"
+                className="flex-1 px-6 py-4 border-2 border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-colors text-lg font-semibold flex items-center justify-center gap-2"
               >
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M10 19l-7-7m0 0l7-7m-7 7h18"
+                  />
+                </svg>
                 המשך קניות
               </button>
               <button
                 onClick={onProceedToOrder}
-                className="flex-1 px-6 py-4 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white rounded-xl font-bold text-lg transition-all duration-300 hover:scale-105 shadow-lg"
+                className="flex-1 px-6 py-4 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white rounded-xl font-bold text-lg transition-all duration-300 hover:scale-105 shadow-lg flex items-center justify-center gap-2"
               >
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
                 סיום הזמנה
               </button>
             </div>
