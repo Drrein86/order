@@ -156,7 +156,7 @@ export function WelcomeScreen({
                 📦
               </div>
               <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-3 sm:mb-4">
-                טייקאווי
+                לקחת
               </h2>
               <p className="text-gray-600 leading-relaxed text-base sm:text-lg mb-4">
                 להזמין ולקחת הביתה מהר, נוח ובטעם מושלם
@@ -203,7 +203,7 @@ export function WelcomeScreen({
           </p>
           <div className="flex flex-col sm:flex-row justify-center space-y-2 sm:space-y-0 sm:space-x-4 text-white/60 text-sm sm:text-base">
             <span>🍽️ שבת במקום</span>
-            <span>📦 טייקאווי</span>
+            <span>📦 לקחת</span>
           </div>
         </div>
       </div>

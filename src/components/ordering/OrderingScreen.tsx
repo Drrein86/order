@@ -121,7 +121,7 @@ export function OrderingScreen({
                   {business.name}
                 </h1>
                 <p className="text-xs sm:text-sm text-gray-500">
-                  {orderType === "DINE_IN" ? "🍽️ שבת במקום" : "📦 טייקאווי"}
+                  {orderType === "DINE_IN" ? "🍽️ שבת במקום" : "📦 לקחת"}
                 </p>
               </div>
             </div>
@@ -154,18 +154,8 @@ export function OrderingScreen({
 
       {/* תוכן ראשי */}
       <div className="flex-1 flex flex-col lg:flex-row">
-        {/* פאנל קטגוריות - צד ימין או תחתון במובייל */}
-        <div className="lg:w-80 bg-white shadow-lg overflow-y-auto order-2 lg:order-1">
-          <CategoriesPanel
-            categories={categories}
-            selectedCategoryId={selectedCategoryId}
-            onCategorySelect={setSelectedCategoryId}
-            businessColors={business.colors}
-          />
-        </div>
-
-        {/* פאנל מוצרים - מרכז */}
-        <div className="flex-1 overflow-y-auto order-1 lg:order-2">
+        {/* פאנל מוצרים - צד שמאל גדול */}
+        <div className="flex-1 overflow-y-auto order-1 lg:order-1">
           <ProductsPanel
             products={selectedCategory?.products || []}
             onAddToCart={(product, options, quantity) => {
@@ -194,6 +184,16 @@ export function OrderingScreen({
               };
               addToCart(cartItem);
             }}
+          />
+        </div>
+
+        {/* פאנל קטגוריות - צד ימין קטן */}
+        <div className="lg:w-64 bg-white shadow-lg overflow-y-auto order-2 lg:order-2">
+          <CategoriesPanel
+            categories={categories}
+            selectedCategoryId={selectedCategoryId}
+            onCategorySelect={setSelectedCategoryId}
+            businessColors={business.colors}
           />
         </div>
       </div>

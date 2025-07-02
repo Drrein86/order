@@ -100,7 +100,7 @@ export function OrderModal({
             </button>
           </div>
           <p className="text-gray-600 mt-1 text-sm sm:text-base">
-            {orderType === "DINE_IN" ? "שבת במקום" : "טייקאווי"} • סה"כ: ₪
+            {orderType === "DINE_IN" ? "שבת במקום" : "לקחת"} • סה"כ: ₪
             {total.toFixed(2)}
           </p>
         </div>
