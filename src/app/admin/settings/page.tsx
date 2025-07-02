@@ -324,7 +324,7 @@ export default function AdminSettingsPage() {
       </header>
 
       {/* תוכן ראשי */}
-      <main className="max-w-7xl mx-auto px-6 py-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
         {/* הודעות */}
         {success && (
           <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
@@ -338,14 +338,14 @@ export default function AdminSettingsPage() {
           </div>
         )}
 
-        <div className="grid lg:grid-cols-4 gap-8">
+        <div className="grid lg:grid-cols-4 gap-6 lg:gap-8">
           {/* תפריט צד */}
           <div className="lg:col-span-1">
             <div className="bg-white rounded-xl shadow-lg p-4">
               <nav className="space-y-2">
                 <button
                   onClick={() => setActiveTab("business")}
-                  className={`w-full text-right px-4 py-3 rounded-lg transition-colors ${
+                  className={`w-full text-right px-3 sm:px-4 py-3 rounded-lg transition-colors text-sm sm:text-base ${
                     activeTab === "business"
                       ? "bg-blue-100 text-blue-800 font-medium"
                       : "text-gray-600 hover:bg-gray-100"
@@ -356,7 +356,7 @@ export default function AdminSettingsPage() {
 
                 <button
                   onClick={() => setActiveTab("appearance")}
-                  className={`w-full text-right px-4 py-3 rounded-lg transition-colors ${
+                  className={`w-full text-right px-3 sm:px-4 py-3 rounded-lg transition-colors text-sm sm:text-base ${
                     activeTab === "appearance"
                       ? "bg-blue-100 text-blue-800 font-medium"
                       : "text-gray-600 hover:bg-gray-100"
@@ -367,7 +367,7 @@ export default function AdminSettingsPage() {
 
                 <button
                   onClick={() => setActiveTab("notifications")}
-                  className={`w-full text-right px-4 py-3 rounded-lg transition-colors ${
+                  className={`w-full text-right px-3 sm:px-4 py-3 rounded-lg transition-colors text-sm sm:text-base ${
                     activeTab === "notifications"
                       ? "bg-blue-100 text-blue-800 font-medium"
                       : "text-gray-600 hover:bg-gray-100"
@@ -378,7 +378,7 @@ export default function AdminSettingsPage() {
 
                 <button
                   onClick={() => setActiveTab("ordering")}
-                  className={`w-full text-right px-4 py-3 rounded-lg transition-colors ${
+                  className={`w-full text-right px-3 sm:px-4 py-3 rounded-lg transition-colors text-sm sm:text-base ${
                     activeTab === "ordering"
                       ? "bg-blue-100 text-blue-800 font-medium"
                       : "text-gray-600 hover:bg-gray-100"
@@ -394,13 +394,16 @@ export default function AdminSettingsPage() {
           <div className="lg:col-span-3">
             {/* פרטי עסק */}
             {activeTab === "business" && (
-              <div className="bg-white rounded-xl shadow-lg p-6">
-                <h2 className="text-xl font-bold text-gray-800 mb-6">
+              <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6">
+                <h2 className="text-xl font-bold text-gray-800 mb-4 sm:mb-6">
                   🏢 פרטי עסק
                 </h2>
 
-                <form onSubmit={handleBusinessUpdate} className="space-y-6">
-                  <div className="grid md:grid-cols-2 gap-4">
+                <form
+                  onSubmit={handleBusinessUpdate}
+                  className="space-y-4 sm:space-y-6"
+                >
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         שם העסק *
@@ -414,7 +417,7 @@ export default function AdminSettingsPage() {
                             name: e.target.value,
                           }))
                         }
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         required
                       />
                     </div>
@@ -429,7 +432,7 @@ export default function AdminSettingsPage() {
                             <img
                               src={formData.logo}
                               alt="לוגו נוכחי"
-                              className="w-32 h-32 object-cover rounded-lg border-2 border-gray-200"
+                              className="w-24 h-24 sm:w-32 sm:h-32 object-cover rounded-lg border-2 border-gray-200"
                             />
                             <button
                               onClick={(e) => {
@@ -442,7 +445,7 @@ export default function AdminSettingsPage() {
                             </button>
                           </div>
                         )}
-                        <div className="flex items-center space-x-3">
+                        <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-3">
                           <input
                             type="file"
                             accept="image/*"
@@ -453,11 +456,11 @@ export default function AdminSettingsPage() {
                           />
                           <label
                             htmlFor="logo-upload"
-                            className="cursor-pointer bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50"
+                            className="cursor-pointer bg-blue-600 text-white px-3 sm:px-4 py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50 text-sm sm:text-base"
                           >
                             {uploadingLogo ? "מעלה..." : "העלה לוגו חדש"}
                           </label>
-                          <span className="text-sm text-gray-500">
+                          <span className="text-xs sm:text-sm text-gray-500">
                             PNG, JPG עד 5MB
                           </span>
                         </div>
@@ -465,7 +468,7 @@ export default function AdminSettingsPage() {
                     </div>
                   </div>
 
-                  <div className="grid md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         טלפון
@@ -482,7 +485,7 @@ export default function AdminSettingsPage() {
                             },
                           }))
                         }
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         placeholder="050-1234567"
                       />
                     </div>
@@ -494,11 +497,11 @@ export default function AdminSettingsPage() {
                       <input
                         type="text"
                         value=""
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         placeholder="רחוב ירושלים 1, תל אביב"
                         disabled
                       />
-                      <p className="text-sm text-gray-500 mt-1">
+                      <p className="text-xs sm:text-sm text-gray-500 mt-1">
                         כתובת תתווסף בקרוב
                       </p>
                     </div>
@@ -511,18 +514,18 @@ export default function AdminSettingsPage() {
                     <textarea
                       value=""
                       rows={3}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       placeholder="תיאור קצר על העסק..."
                       disabled
                     />
-                    <p className="text-sm text-gray-500 mt-1">
+                    <p className="text-xs sm:text-sm text-gray-500 mt-1">
                       תיאור העסק יתווסף בקרוב
                     </p>
                   </div>
 
                   <button
                     type="submit"
-                    className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition-colors"
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-4 sm:px-6 py-2 rounded-lg transition-colors text-sm sm:text-base"
                   >
                     שמור שינויים
                   </button>
@@ -532,13 +535,16 @@ export default function AdminSettingsPage() {
 
             {/* עיצוב ומראה */}
             {activeTab === "appearance" && (
-              <div className="bg-white rounded-xl shadow-lg p-6">
-                <h2 className="text-xl font-bold text-gray-800 mb-6">
+              <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6">
+                <h2 className="text-xl font-bold text-gray-800 mb-4 sm:mb-6">
                   🎨 עיצוב ומראה
                 </h2>
 
-                <form onSubmit={handleSettingsUpdate} className="space-y-6">
-                  <div className="grid md:grid-cols-2 gap-6">
+                <form
+                  onSubmit={handleSettingsUpdate}
+                  className="space-y-4 sm:space-y-6"
+                >
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         צבע ראשי
@@ -556,7 +562,7 @@ export default function AdminSettingsPage() {
                               },
                             }))
                           }
-                          className="w-12 h-10 rounded border border-gray-300"
+                          className="w-10 sm:w-12 h-10 rounded border border-gray-300"
                         />
                         <input
                           type="text"
@@ -570,7 +576,7 @@ export default function AdminSettingsPage() {
                               },
                             }))
                           }
-                          className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          className="flex-1 px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
                         />
                       </div>
                     </div>
@@ -592,7 +598,7 @@ export default function AdminSettingsPage() {
                               },
                             }))
                           }
-                          className="w-12 h-10 rounded border border-gray-300"
+                          className="w-10 sm:w-12 h-10 rounded border border-gray-300"
                         />
                         <input
                           type="text"
@@ -606,7 +612,7 @@ export default function AdminSettingsPage() {
                               },
                             }))
                           }
-                          className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          className="flex-1 px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
                         />
                       </div>
                     </div>
@@ -625,17 +631,17 @@ export default function AdminSettingsPage() {
                           backgroundVideo: e.target.value,
                         }))
                       }
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       placeholder="https://example.com/video.mp4"
                     />
-                    <p className="text-sm text-gray-600 mt-1">
+                    <p className="text-xs sm:text-sm text-gray-600 mt-1">
                       הוידאו יופיע כרקע במסך הברוכים הבאים
                     </p>
                   </div>
 
                   <button
                     type="submit"
-                    className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition-colors"
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-4 sm:px-6 py-2 rounded-lg transition-colors text-sm sm:text-base"
                   >
                     שמור עיצוב
                   </button>
@@ -645,19 +651,22 @@ export default function AdminSettingsPage() {
 
             {/* התראות */}
             {activeTab === "notifications" && (
-              <div className="bg-white rounded-xl shadow-lg p-6">
-                <h2 className="text-xl font-bold text-gray-800 mb-6">
+              <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6">
+                <h2 className="text-xl font-bold text-gray-800 mb-4 sm:mb-6">
                   📬 הגדרות התראות
                 </h2>
 
-                <form onSubmit={handleSettingsUpdate} className="space-y-6">
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                <form
+                  onSubmit={handleSettingsUpdate}
+                  className="space-y-4 sm:space-y-6"
+                >
+                  <div className="space-y-3 sm:space-y-4">
+                    <div className="flex items-center justify-between p-3 sm:p-4 bg-gray-50 rounded-lg">
                       <div>
-                        <h3 className="font-medium text-gray-800">
+                        <h3 className="font-medium text-gray-800 text-sm sm:text-base">
                           התראות אימיל
                         </h3>
-                        <p className="text-sm text-gray-600">
+                        <p className="text-xs sm:text-sm text-gray-600">
                           קבל התראות על הזמנות חדשות באימיל
                         </p>
                       </div>
@@ -676,16 +685,16 @@ export default function AdminSettingsPage() {
                           }
                           className="sr-only peer"
                         />
-                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                        <div className="w-10 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
                       </label>
                     </div>
 
-                    <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                    <div className="flex items-center justify-between p-3 sm:p-4 bg-gray-50 rounded-lg">
                       <div>
-                        <h3 className="font-medium text-gray-800">
+                        <h3 className="font-medium text-gray-800 text-sm sm:text-base">
                           התראות WhatsApp
                         </h3>
-                        <p className="text-sm text-gray-600">
+                        <p className="text-xs sm:text-sm text-gray-600">
                           שלח הזמנות ללקוחות בWhatsApp
                         </p>
                       </div>
@@ -704,16 +713,16 @@ export default function AdminSettingsPage() {
                           }
                           className="sr-only peer"
                         />
-                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                        <div className="w-10 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
                       </label>
                     </div>
 
-                    <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                    <div className="flex items-center justify-between p-3 sm:p-4 bg-gray-50 rounded-lg">
                       <div>
-                        <h3 className="font-medium text-gray-800">
+                        <h3 className="font-medium text-gray-800 text-sm sm:text-base">
                           הדפסה אוטומטית
                         </h3>
-                        <p className="text-sm text-gray-600">
+                        <p className="text-xs sm:text-sm text-gray-600">
                           הדפס הזמנות חדשות אוטומטית
                         </p>
                       </div>
@@ -732,7 +741,7 @@ export default function AdminSettingsPage() {
                           }
                           className="sr-only peer"
                         />
-                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                        <div className="w-10 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
                       </label>
                     </div>
                   </div>
@@ -754,7 +763,7 @@ export default function AdminSettingsPage() {
                             },
                           }))
                         }
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         placeholder="050-1234567"
                       />
                     </div>
@@ -762,7 +771,7 @@ export default function AdminSettingsPage() {
 
                   <button
                     type="submit"
-                    className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition-colors"
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-4 sm:px-6 py-2 rounded-lg transition-colors text-sm sm:text-base"
                   >
                     שמור הגדרות התראות
                   </button>
@@ -772,12 +781,15 @@ export default function AdminSettingsPage() {
 
             {/* הגדרות הזמנות */}
             {activeTab === "ordering" && (
-              <div className="bg-white rounded-xl shadow-lg p-6">
-                <h2 className="text-xl font-bold text-gray-800 mb-6">
+              <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6">
+                <h2 className="text-xl font-bold text-gray-800 mb-4 sm:mb-6">
                   🛍️ הגדרות הזמנות
                 </h2>
 
-                <form onSubmit={handleSettingsUpdate} className="space-y-6">
+                <form
+                  onSubmit={handleSettingsUpdate}
+                  className="space-y-4 sm:space-y-6"
+                >
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       מספר התחלתי להזמנות
@@ -785,30 +797,30 @@ export default function AdminSettingsPage() {
                     <input
                       type="number"
                       value="1"
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       min="1"
                       disabled
                     />
-                    <p className="text-sm text-gray-600 mt-1">
+                    <p className="text-xs sm:text-sm text-gray-600 mt-1">
                       מספר זה יקבע את מספור ההזמנות הבא
                     </p>
                   </div>
 
-                  <div className="bg-blue-50 rounded-lg p-4">
-                    <h3 className="font-medium text-blue-800 mb-2">
+                  <div className="bg-blue-50 rounded-lg p-3 sm:p-4">
+                    <h3 className="font-medium text-blue-800 mb-2 text-sm sm:text-base">
                       🔗 קישור מסך הזמנות
                     </h3>
-                    <div className="bg-white rounded border p-3 font-mono text-sm">
+                    <div className="bg-white rounded border p-2 sm:p-3 font-mono text-xs sm:text-sm break-all">
                       http://localhost:3000/screen/{session.user.businessId}
                     </div>
-                    <p className="text-sm text-blue-700 mt-2">
+                    <p className="text-xs sm:text-sm text-blue-700 mt-2">
                       זה הקישור שלקוחות ישתמשו בו כדי להזמין ממך
                     </p>
                   </div>
 
                   <button
                     type="submit"
-                    className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition-colors"
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-4 sm:px-6 py-2 rounded-lg transition-colors text-sm sm:text-base"
                   >
                     שמור הגדרות הזמנות
                   </button>
@@ -820,12 +832,12 @@ export default function AdminSettingsPage() {
       </main>
 
       {/* כפתור שמירה */}
-      <div className="mt-8 bg-white rounded-lg shadow-sm p-6">
-        <div className="flex justify-end space-x-4">
+      <div className="mt-6 sm:mt-8 bg-white rounded-lg shadow-sm p-4 sm:p-6 mx-4 sm:mx-6 lg:mx-8">
+        <div className="flex justify-end">
           <button
             onClick={handleSave}
             disabled={isLoading}
-            className="bg-blue-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="bg-blue-600 text-white px-6 sm:px-8 py-3 rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
           >
             {isLoading ? "שומר..." : "שמור הגדרות"}
           </button>
