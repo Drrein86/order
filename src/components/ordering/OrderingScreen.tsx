@@ -97,30 +97,30 @@ export function OrderingScreen({
         className="bg-white shadow-sm border-b-4 sticky top-0 z-30"
         style={{ borderBottomColor: business.colors.primary }}
       >
-        <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 py-3 sm:py-4 flex items-center justify-between">
           {/* כפתור חזרה ושם העסק */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 sm:gap-4">
             <button
               onClick={onBack}
-              className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
+              className="flex items-center gap-1 sm:gap-2 px-2 sm:px-4 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors text-sm sm:text-base"
             >
-              <span className="text-xl">←</span>
-              <span>חזרה</span>
+              <span className="text-lg sm:text-xl">←</span>
+              <span className="hidden sm:inline">חזרה</span>
             </button>
 
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 sm:gap-3">
               {business.logo && (
                 <img
                   src={business.logo}
                   alt={business.name}
-                  className="w-10 h-10 rounded-full"
+                  className="w-8 h-8 sm:w-10 sm:h-10 rounded-full"
                 />
               )}
               <div>
-                <h1 className="text-xl font-bold text-gray-800">
+                <h1 className="text-base sm:text-xl font-bold text-gray-800 truncate max-w-32 sm:max-w-none">
                   {business.name}
                 </h1>
-                <p className="text-sm text-gray-500">
+                <p className="text-xs sm:text-sm text-gray-500">
                   {orderType === "DINE_IN" ? "🍽️ שבת במקום" : "📦 טייקאווי"}
                 </p>
               </div>
@@ -131,8 +131,8 @@ export function OrderingScreen({
           <button
             onClick={() => setIsCartOpen(true)}
             className={`
-              relative flex items-center gap-3 px-6 py-3 rounded-xl font-bold text-white
-              transition-all duration-300 hover:scale-105 shadow-lg
+              relative flex items-center gap-2 sm:gap-3 px-3 sm:px-6 py-2 sm:py-3 rounded-xl font-bold text-white
+              transition-all duration-300 hover:scale-105 shadow-lg text-sm sm:text-base
               ${
                 cartItemsCount > 0
                   ? "bg-green-600 hover:bg-green-700"
@@ -141,10 +141,10 @@ export function OrderingScreen({
             `}
             disabled={cartItemsCount === 0}
           >
-            <span className="text-xl">🛒</span>
-            <span>סל הקניות</span>
+            <span className="text-lg sm:text-xl">🛒</span>
+            <span className="hidden sm:inline">סל הקניות</span>
             {cartItemsCount > 0 && (
-              <span className="bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold absolute -top-2 -right-2">
+              <span className="bg-red-500 text-white rounded-full w-5 h-5 sm:w-6 sm:h-6 flex items-center justify-center text-xs sm:text-sm font-bold absolute -top-1 -right-1 sm:-top-2 sm:-right-2">
                 {cartItemsCount}
               </span>
             )}
@@ -153,9 +153,9 @@ export function OrderingScreen({
       </header>
 
       {/* תוכן ראשי */}
-      <div className="flex-1 flex">
-        {/* פאנל קטגוריות - צד ימין */}
-        <div className="w-80 bg-white shadow-lg overflow-y-auto">
+      <div className="flex-1 flex flex-col lg:flex-row">
+        {/* פאנל קטגוריות - צד ימין או תחתון במובייל */}
+        <div className="lg:w-80 bg-white shadow-lg overflow-y-auto order-2 lg:order-1">
           <CategoriesPanel
             categories={categories}
             selectedCategoryId={selectedCategoryId}
@@ -165,7 +165,7 @@ export function OrderingScreen({
         </div>
 
         {/* פאנל מוצרים - מרכז */}
-        <div className="flex-1 overflow-y-auto">
+        <div className="flex-1 overflow-y-auto order-1 lg:order-2">
           <ProductsPanel
             products={selectedCategory?.products || []}
             onAddToCart={(product, options, quantity) => {
@@ -234,29 +234,29 @@ export function OrderingScreen({
       {/* תחתית קבועה עם סיכום */}
       {cartItemsCount > 0 && (
         <div
-          className="sticky bottom-0 bg-white border-t-4 shadow-lg p-4 z-20"
+          className="sticky bottom-0 bg-white border-t-4 shadow-lg p-3 sm:p-4 z-20"
           style={{ borderTopColor: business.colors.primary }}
         >
-          <div className="max-w-7xl mx-auto flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <span className="text-lg font-bold text-gray-800">
+          <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-0">
+            <div className="flex items-center gap-2 sm:gap-4">
+              <span className="text-base sm:text-lg font-bold text-gray-800">
                 סה"כ: {cartTotal.toFixed(2)} ₪
               </span>
-              <span className="text-sm text-gray-600">
+              <span className="text-xs sm:text-sm text-gray-600">
                 ({cartItemsCount} פריטים)
               </span>
             </div>
 
-            <div className="flex gap-3">
+            <div className="flex gap-2 sm:gap-3 w-full sm:w-auto">
               <button
                 onClick={() => setIsCartOpen(true)}
-                className="px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                className="flex-1 sm:flex-none px-4 sm:px-6 py-2 sm:py-3 border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-sm sm:text-base"
               >
                 עריכת סל
               </button>
               <button
                 onClick={() => setIsOrderModalOpen(true)}
-                className="px-8 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg font-bold transition-colors"
+                className="flex-1 sm:flex-none px-4 sm:px-8 py-2 sm:py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg font-bold transition-colors text-sm sm:text-base"
               >
                 סיום הזמנה
               </button>

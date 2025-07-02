@@ -83,21 +83,23 @@ export function OrderModal({
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-3 sm:p-4">
       <div className="bg-white rounded-xl max-w-lg w-full max-h-[90vh] overflow-hidden">
         {/* כותרת */}
-        <div className="bg-green-50 px-6 py-4 border-b">
+        <div className="bg-green-50 px-4 sm:px-6 py-3 sm:py-4 border-b">
           <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-bold text-gray-800">🍽️ סיום הזמנה</h2>
+            <h2 className="text-lg sm:text-2xl font-bold text-gray-800">
+              🍽️ סיום הזמנה
+            </h2>
             <button
               onClick={onClose}
-              className="text-gray-500 hover:text-gray-700 text-2xl"
+              className="text-gray-500 hover:text-gray-700 text-xl sm:text-2xl"
               disabled={isSubmitting}
             >
               ✕
             </button>
           </div>
-          <p className="text-gray-600 mt-1">
+          <p className="text-gray-600 mt-1 text-sm sm:text-base">
             {orderType === "DINE_IN" ? "שבת במקום" : "טייקאווי"} • סה"כ: ₪
             {total.toFixed(2)}
           </p>
@@ -106,13 +108,15 @@ export function OrderModal({
         {/* תוכן */}
         <form
           onSubmit={handleSubmit}
-          className="p-6 overflow-y-auto max-h-[70vh]"
+          className="p-3 sm:p-6 overflow-y-auto max-h-[70vh]"
         >
           {/* פרטי לקוח */}
-          <div className="mb-6">
-            <h3 className="text-lg font-bold text-gray-800 mb-4">פרטי לקוח</h3>
+          <div className="mb-4 sm:mb-6">
+            <h3 className="text-base sm:text-lg font-bold text-gray-800 mb-3 sm:mb-4">
+              פרטי לקוח
+            </h3>
 
-            <div className="space-y-4">
+            <div className="space-y-3 sm:space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   שם מלא *
@@ -121,7 +125,7 @@ export function OrderModal({
                   type="text"
                   value={customerName}
                   onChange={(e) => setCustomerName(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base"
                   placeholder="הזן את השם המלא"
                   required
                   disabled={isSubmitting}
@@ -136,7 +140,7 @@ export function OrderModal({
                   type="tel"
                   value={customerPhone}
                   onChange={(e) => setCustomerPhone(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base"
                   placeholder="050-1234567"
                   required
                   disabled={isSubmitting}
@@ -151,7 +155,7 @@ export function OrderModal({
                   type="email"
                   value={customerEmail}
                   onChange={(e) => setCustomerEmail(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base"
                   placeholder="example@email.com"
                   disabled={isSubmitting}
                 />
@@ -160,14 +164,14 @@ export function OrderModal({
           </div>
 
           {/* הערות */}
-          <div className="mb-6">
+          <div className="mb-4 sm:mb-6">
             <label className="block text-sm font-medium text-gray-700 mb-1">
               הערות להזמנה (אופציונלי)
             </label>
             <textarea
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base"
               rows={3}
               placeholder="הערות מיוחדות..."
               disabled={isSubmitting}
@@ -175,15 +179,17 @@ export function OrderModal({
           </div>
 
           {/* סיכום הזמנה */}
-          <div className="bg-gray-50 rounded-lg p-4 mb-6">
-            <h3 className="font-bold text-gray-800 mb-2">סיכום הזמנה</h3>
-            <div className="space-y-1 text-sm">
+          <div className="bg-gray-50 rounded-lg p-3 sm:p-4 mb-4 sm:mb-6">
+            <h3 className="font-bold text-gray-800 mb-2 text-sm sm:text-base">
+              סיכום הזמנה
+            </h3>
+            <div className="space-y-1 text-xs sm:text-sm">
               {cart.map((item, index) => (
                 <div key={index} className="flex justify-between">
-                  <span>
+                  <span className="truncate flex-1 mr-2">
                     {item.product.name} x{item.quantity}
                   </span>
-                  <span>
+                  <span className="flex-shrink-0">
                     ₪{(item.product.price * item.quantity).toFixed(2)}
                   </span>
                 </div>
@@ -203,18 +209,18 @@ export function OrderModal({
           )}
 
           {/* כפתורים */}
-          <div className="flex gap-3">
+          <div className="flex gap-2 sm:gap-3">
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 px-4 py-3 border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+              className="flex-1 px-3 sm:px-4 py-2 sm:py-3 border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-sm sm:text-base"
               disabled={isSubmitting}
             >
               ביטול
             </button>
             <button
               type="submit"
-              className="flex-1 px-4 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg font-bold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 px-3 sm:px-4 py-2 sm:py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg font-bold transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
               disabled={isSubmitting}
             >
               {isSubmitting ? (

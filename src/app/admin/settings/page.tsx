@@ -620,23 +620,86 @@ export default function AdminSettingsPage() {
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      וידאו רקע (URL)
+                      וידאו רקע
                     </label>
-                    <input
-                      type="url"
-                      value={formData.backgroundVideo || ""}
-                      onChange={(e) =>
-                        setFormData((prev) => ({
-                          ...prev,
-                          backgroundVideo: e.target.value,
-                        }))
-                      }
-                      className="w-full px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      placeholder="https://example.com/video.mp4"
-                    />
-                    <p className="text-xs sm:text-sm text-gray-600 mt-1">
-                      הוידאו יופיע כרקע במסך הברוכים הבאים
-                    </p>
+
+                    <div className="space-y-4">
+                      {formData.backgroundVideo && (
+                        <div className="relative">
+                          <video
+                            src={formData.backgroundVideo}
+                            className="w-full h-48 sm:h-64 object-cover rounded-lg border-2 border-gray-200"
+                            controls
+                          />
+                          <button
+                            onClick={(e) => {
+                              e.preventDefault();
+                              setFormData((prev) => ({
+                                ...prev,
+                                backgroundVideo: "",
+                              }));
+                            }}
+                            className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm hover:bg-red-600"
+                          >
+                            ×
+                          </button>
+                        </div>
+                      )}
+
+                      <div className="space-y-3">
+                        {/* העלאת וידאו מהגלריה */}
+                        <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-3">
+                          <input
+                            type="file"
+                            accept="video/*"
+                            onChange={handleVideoUpload}
+                            className="hidden"
+                            id="video-upload"
+                            disabled={uploadingVideo}
+                          />
+                          <label
+                            htmlFor="video-upload"
+                            className="cursor-pointer bg-green-600 text-white px-3 sm:px-4 py-2 rounded-lg hover:bg-green-700 disabled:opacity-50 text-sm sm:text-base"
+                          >
+                            {uploadingVideo ? "מעלה..." : "העלה וידאו מהגלריה"}
+                          </label>
+                          <span className="text-xs sm:text-sm text-gray-500">
+                            MP4 עד 50MB
+                          </span>
+                        </div>
+
+                        {/* או הכנס URL */}
+                        <div className="relative">
+                          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <span className="text-gray-500 text-sm">או</span>
+                          </div>
+                          <input
+                            type="url"
+                            value={formData.backgroundVideo || ""}
+                            onChange={(e) =>
+                              setFormData((prev) => ({
+                                ...prev,
+                                backgroundVideo: e.target.value,
+                              }))
+                            }
+                            className="w-full pl-8 pr-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                            placeholder="https://example.com/video.mp4"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="bg-blue-50 p-3 sm:p-4 rounded-lg">
+                        <h3 className="font-medium text-blue-900 mb-2 text-sm sm:text-base">
+                          💡 טיפים לוידאו רקע מושלם:
+                        </h3>
+                        <ul className="text-xs sm:text-sm text-blue-800 space-y-1">
+                          <li>• השתמש בוידאו באיכות גבוהה (1080p)</li>
+                          <li>• וידאו קצר של 10-30 שניות שחוזר על עצמו</li>
+                          <li>• תנועה עדינה שלא מסיחה את הדעת</li>
+                          <li>• תאורה טובה וצבעים תואמים</li>
+                        </ul>
+                      </div>
+                    </div>
                   </div>
 
                   <button

@@ -269,8 +269,8 @@ export function ProductsPanel({ products, onAddToCart }: ProductsPanelProps) {
   };
 
   return (
-    <div className="flex-1 overflow-y-auto p-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div className="flex-1 overflow-y-auto p-3 sm:p-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
         {products.map((product, index) => (
           <div
             key={product.id}
@@ -286,32 +286,33 @@ export function ProductsPanel({ products, onAddToCart }: ProductsPanelProps) {
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <div className="w-full h-full flex items-center justify-center text-4xl bg-gradient-to-br from-gray-100 to-gray-200">
+                <div className="w-full h-full flex items-center justify-center text-2xl sm:text-4xl bg-gradient-to-br from-gray-100 to-gray-200">
                   🍽️
                 </div>
               )}
-              <div className="absolute top-3 right-3">
-                <div className="bg-white bg-opacity-90 backdrop-blur-sm rounded-full px-3 py-1 text-sm font-semibold text-gray-800">
+              <div className="absolute top-2 right-2 sm:top-3 sm:right-3">
+                <div className="bg-white bg-opacity-90 backdrop-blur-sm rounded-full px-2 py-1 sm:px-3 sm:py-1 text-xs sm:text-sm font-semibold text-gray-800">
                   {(product.basePrice || product.price || 0).toFixed(2)}₪
                 </div>
               </div>
             </div>
-            <div className="p-6">
-              <h3 className="font-bold text-xl mb-3 text-gray-800">
+            <div className="p-3 sm:p-6">
+              <h3 className="font-bold text-lg sm:text-xl mb-2 sm:mb-3 text-gray-800">
                 {product.name}
               </h3>
               {product.description && (
-                <p className="text-gray-600 mb-4 line-clamp-2">
+                <p className="text-gray-600 mb-3 sm:mb-4 line-clamp-2 text-sm sm:text-base">
                   {product.description}
                 </p>
               )}
               <div className="flex justify-between items-center">
-                <span className="text-2xl font-bold text-gradient">
+                <span className="text-lg sm:text-2xl font-bold text-gradient">
                   {(product.basePrice || product.price || 0).toFixed(2)}₪
                 </span>
-                <button className="btn-modern">
-                  <span className="mr-2">🛒</span>
-                  הוסף לסל
+                <button className="btn-modern text-sm sm:text-base px-3 py-2 sm:px-4 sm:py-2">
+                  <span className="mr-1 sm:mr-2">🛒</span>
+                  <span className="hidden sm:inline">הוסף לסל</span>
+                  <span className="sm:hidden">הוסף</span>
                 </button>
               </div>
             </div>
@@ -321,31 +322,31 @@ export function ProductsPanel({ products, onAddToCart }: ProductsPanelProps) {
 
       {/* Modal for product options */}
       {showModal && selectedProduct && (
-        <div className="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+        <div className="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center z-50 p-3 sm:p-4">
           <div className="card-modern max-w-lg w-full max-h-[90vh] overflow-y-auto animate-fade-in-up">
-            <div className="p-8">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold text-gradient">
+            <div className="p-4 sm:p-8">
+              <div className="flex justify-between items-center mb-4 sm:mb-6">
+                <h2 className="text-xl sm:text-2xl font-bold text-gradient">
                   {selectedProduct.name}
                 </h2>
                 <button
                   onClick={() => setShowModal(false)}
-                  className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-gray-600 hover:text-gray-800 transition-colors"
+                  className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-gray-600 hover:text-gray-800 transition-colors"
                 >
                   ✕
                 </button>
               </div>
 
               {selectedProduct.description && (
-                <p className="text-gray-600 mb-4">
+                <p className="text-gray-600 mb-4 text-sm sm:text-base">
                   {selectedProduct.description}
                 </p>
               )}
 
               {/* Product Options */}
               {selectedProduct.productOptions?.map((option) => (
-                <div key={option.id} className="mb-6">
-                  <h3 className="font-semibold mb-3 flex items-center">
+                <div key={option.id} className="mb-4 sm:mb-6">
+                  <h3 className="font-semibold mb-2 sm:mb-3 flex items-center text-sm sm:text-base">
                     {option.name}
                     {option.isRequired && (
                       <span className="text-red-500 mr-2">*</span>
@@ -356,8 +357,10 @@ export function ProductsPanel({ products, onAddToCart }: ProductsPanelProps) {
               ))}
 
               {/* Quantity */}
-              <div className="mb-6">
-                <h3 className="font-semibold mb-3">כמות</h3>
+              <div className="mb-4 sm:mb-6">
+                <h3 className="font-semibold mb-2 sm:mb-3 text-sm sm:text-base">
+                  כמות
+                </h3>
                 <div className="flex items-center space-x-4 space-x-reverse">
                   <button
                     onClick={() => setQuantity(Math.max(1, quantity - 1))}
@@ -376,10 +379,12 @@ export function ProductsPanel({ products, onAddToCart }: ProductsPanelProps) {
               </div>
 
               {/* Total Price */}
-              <div className="border-t pt-4 mb-6">
+              <div className="border-t pt-4 mb-4 sm:mb-6">
                 <div className="flex justify-between items-center">
-                  <span className="text-lg font-semibold">סה"כ:</span>
-                  <span className="text-2xl font-bold text-green-600">
+                  <span className="text-base sm:text-lg font-semibold">
+                    סה"כ:
+                  </span>
+                  <span className="text-xl sm:text-2xl font-bold text-green-600">
                     {calculateTotalPrice().toFixed(2)}₪
                   </span>
                 </div>
@@ -388,7 +393,7 @@ export function ProductsPanel({ products, onAddToCart }: ProductsPanelProps) {
               {/* Add to Cart Button */}
               <button
                 onClick={handleAddToCart}
-                className="w-full btn-modern text-lg py-4"
+                className="w-full btn-modern text-base sm:text-lg py-3 sm:py-4"
                 style={{ background: "var(--success-gradient)" }}
               >
                 <span className="mr-2">🛒</span>
