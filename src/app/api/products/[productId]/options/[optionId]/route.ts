@@ -4,17 +4,18 @@ import { prisma } from '@/lib/db'
 // מחיקת תוספת מוצר
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { productId: string; optionId: string } }
+  { params }: { params: Promise<{ productId: string; optionId: string }> }
 ) {
   try {
+    const { optionId } = await params
     // מחיקת כל ערכי התוספת תחילה
     await prisma.productOptionValue.deleteMany({
-      where: { productOptionId: params.optionId }
+      where: { productOptionId: optionId }
     })
 
     // מחיקת התוספת עצמה
     await prisma.productOption.delete({
-      where: { id: params.optionId }
+      where: { id: optionId }
     })
 
     return NextResponse.json({

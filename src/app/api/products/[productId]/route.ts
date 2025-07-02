@@ -15,11 +15,12 @@ const UpdateProductSchema = z.object({
 // קבלת מוצר ספציפי
 export async function GET(
   request: NextRequest,
-  { params }: { params: { productId: string } }
+  { params }: { params: Promise<{ productId: string }> }
 ) {
   try {
+    const { productId } = await params
     const product = await prisma.product.findUnique({
-      where: { id: params.productId },
+      where: { id: productId },
       include: {
         category: true,
         productOptions: {
@@ -57,14 +58,15 @@ export async function GET(
 // עדכון מוצר
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { productId: string } }
+  { params }: { params: Promise<{ productId: string }> }
 ) {
   try {
+    const { productId } = await params
     const body = await request.json()
     const validatedData = UpdateProductSchema.parse(body)
 
     const product = await prisma.product.update({
-      where: { id: params.productId },
+      where: { id: productId },
       data: validatedData,
       include: {
         category: true,
@@ -102,11 +104,12 @@ export async function PUT(
 // מחיקת מוצר
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { productId: string } }
+  { params }: { params: Promise<{ productId: string }> }
 ) {
   try {
+    const { productId } = await params
     await prisma.product.delete({
-      where: { id: params.productId }
+      where: { id: productId }
     })
 
     return NextResponse.json({

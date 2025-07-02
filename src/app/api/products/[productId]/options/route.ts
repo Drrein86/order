@@ -17,21 +17,22 @@ const CreateProductOptionSchema = z.object({
 // יצירת תוספת חדשה למוצר
 export async function POST(
   request: NextRequest,
-  { params }: { params: { productId: string } }
+  { params }: { params: Promise<{ productId: string }> }
 ) {
   try {
+    const { productId } = await params
     const body = await request.json()
     const validatedData = CreateProductOptionSchema.parse(body)
 
     // קבלת הסדר הגבוה ביותר הנוכחי
     const lastOption = await prisma.productOption.findFirst({
-      where: { productId: params.productId },
+      where: { productId: productId },
       orderBy: { sortOrder: 'desc' }
     })
 
     const productOption = await prisma.productOption.create({
       data: {
-        productId: params.productId,
+        productId: productId,
         name: validatedData.name,
         type: validatedData.type,
         isRequired: validatedData.isRequired,
