@@ -12,16 +12,6 @@ export function WelcomeScreen({
   business,
   onOrderTypeSelect,
 }: WelcomeScreenProps) {
-  const [selectedType, setSelectedType] = useState<
-    "DINE_IN" | "TAKEAWAY" | null
-  >(null);
-
-  const handleContinue = () => {
-    if (selectedType) {
-      onOrderTypeSelect(selectedType);
-    }
-  };
-
   return (
     <div className="min-h-screen relative overflow-hidden">
       {/* וידאו רקע */}
@@ -63,21 +53,23 @@ export function WelcomeScreen({
         <div className="text-center mb-8 sm:mb-10 md:mb-12 w-full max-w-4xl">
           {business.logo && (
             <div className="mb-6 sm:mb-8 animate-fade-in-up">
-              <img
-                src={business.logo}
-                alt={business.name}
-                className="w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40 mx-auto rounded-full shadow-2xl border-4 border-white/20 backdrop-blur-sm"
-                style={{
-                  boxShadow: `0 20px 40px rgba(0,0,0,0.3), 0 0 0 1px rgba(255,255,255,0.1)`,
-                }}
-              />
+              <div className="logo-container w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 mx-auto border-4 border-white/30 backdrop-blur-sm">
+                <img
+                  src={business.logo}
+                  alt={business.name}
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.src =
+                      "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=400&h=400&fit=crop&crop=center";
+                  }}
+                />
+              </div>
             </div>
           )}
           <h1
-            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-4 sm:mb-6 text-white drop-shadow-2xl px-4"
+            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold mb-4 sm:mb-6 text-white drop-shadow-2xl px-4 bg-gradient-to-r from-white to-white/90 bg-clip-text text-transparent"
             style={{
-              textShadow: "3px 3px 6px rgba(0,0,0,0.8)",
-              color: business.colors?.text || "#FFFFFF",
+              textShadow: "4px 4px 8px rgba(0,0,0,0.9)",
             }}
           >
             {business.name}
@@ -88,80 +80,48 @@ export function WelcomeScreen({
         </div>
 
         {/* כפתורי בחירה */}
-        <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 max-w-2xl w-full px-4">
+        <div className="flex flex-col sm:flex-row gap-6 sm:gap-8 max-w-4xl w-full px-4 justify-center">
           {/* שבת במקום */}
           <button
-            onClick={() => setSelectedType("DINE_IN")}
+            onClick={() => onOrderTypeSelect("DINE_IN")}
             className={`
-              bg-white/20 backdrop-blur-sm rounded-xl p-6 sm:p-8 cursor-pointer
+              btn-large bg-white/20 backdrop-blur-sm rounded-2xl cursor-pointer
               transform transition-all duration-300 hover:scale-105
-              border border-white/30 min-h-[120px] flex items-center justify-center
-              ${
-                selectedType === "DINE_IN"
-                  ? "ring-2 ring-white/50 bg-white/30"
-                  : "hover:bg-white/30"
-              }
+              border border-white/30 min-h-[250px] sm:min-h-[300px] flex items-center justify-center
+              flex-1 max-w-[350px] sm:max-w-[450px]
+              hover:bg-white/30 hover:shadow-xl
             `}
           >
-            <span className="text-2xl sm:text-3xl font-bold text-white">
+            <span className="text-4xl sm:text-5xl md:text-6xl font-bold text-white">
               לשבת
             </span>
           </button>
 
           {/* לקחת */}
           <button
-            onClick={() => setSelectedType("TAKEAWAY")}
+            onClick={() => onOrderTypeSelect("TAKEAWAY")}
             className={`
-              bg-white/20 backdrop-blur-sm rounded-xl p-6 sm:p-8 cursor-pointer
+              btn-large bg-white/20 backdrop-blur-sm rounded-2xl cursor-pointer
               transform transition-all duration-300 hover:scale-105
-              border border-white/30 min-h-[120px] flex items-center justify-center
-              ${
-                selectedType === "TAKEAWAY"
-                  ? "ring-2 ring-white/50 bg-white/30"
-                  : "hover:bg-white/30"
-              }
+              border border-white/30 min-h-[250px] sm:min-h-[300px] flex items-center justify-center
+              flex-1 max-w-[350px] sm:max-w-[450px]
+              hover:bg-white/30 hover:shadow-xl
             `}
           >
-            <span className="text-2xl sm:text-3xl font-bold text-white">
+            <span className="text-4xl sm:text-5xl md:text-6xl font-bold text-white">
               לקחת
             </span>
           </button>
         </div>
 
-        {/* כפתור המשך */}
-        {selectedType && (
-          <div className="mt-8 sm:mt-10 md:mt-12 animate-fade-in px-4 w-full max-w-md">
-            <button
-              onClick={handleContinue}
-              className={`
-                w-full px-8 sm:px-12 md:px-16 py-4 sm:py-5 md:py-6 rounded-xl sm:rounded-2xl 
-                text-lg sm:text-xl md:text-2xl font-bold text-white
-                transform transition-all duration-300 hover:scale-105 active:scale-95
-                shadow-2xl hover:shadow-3xl backdrop-blur-sm
-                ${
-                  selectedType === "DINE_IN"
-                    ? "bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800"
-                    : "bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800"
-                }
-              `}
-              style={{
-                boxShadow: `0 20px 40px rgba(0,0,0,0.3)`,
-              }}
-            >
-              {selectedType === "DINE_IN" ? "🍽️ " : "📦 "}
-              המשך להזמנה →
-            </button>
-          </div>
-        )}
-
         {/* הודעה נוספת */}
         <div className="mt-12 sm:mt-14 md:mt-16 text-center animate-fade-in-delayed px-4">
           <p className="text-white/80 text-base sm:text-lg md:text-xl font-light mb-4">
-            👆 בחרו את סוג ההזמנה שלכם כדי להתחיל
+            👆 לחצו על סוג ההזמנה הרצוי כדי להתחיל
           </p>
           <div className="flex flex-col sm:flex-row justify-center space-y-2 sm:space-y-0 sm:space-x-4 text-white/60 text-sm sm:text-base">
-            <span>🍽️ שבת במקום</span>
-            <span>📦 לקחת</span>
+            <span>שבת במקום</span>
+            <span>לקחת</span>
           </div>
         </div>
       </div>

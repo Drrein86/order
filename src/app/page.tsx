@@ -145,16 +145,20 @@ export default function HomePage() {
               >
                 <div className="flex flex-col lg:flex-row items-center justify-between gap-4 sm:gap-6">
                   <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6 text-center sm:text-right">
-                    <div className="image-container w-20 h-20 sm:w-24 sm:h-24">
+                    <div className="logo-container w-24 h-24 sm:w-32 sm:h-32">
                       <img
                         src={business.logo}
                         alt={business.name}
-                        className="w-full h-full object-cover rounded-lg"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.src =
+                            "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=400&h=400&fit=crop&crop=center";
+                        }}
                       />
                     </div>
 
                     <div>
-                      <h3 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-2">
+                      <h3 className="text-2xl sm:text-3xl font-bold mb-2 business-name-gradient">
                         {business.name}
                       </h3>
                       {business.description && (
@@ -165,10 +169,10 @@ export default function HomePage() {
                     </div>
                   </div>
 
-                  <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full sm:w-auto">
+                  <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full sm:w-auto justify-center">
                     <Link
                       href={`/screen/${business.id}`}
-                      className="btn-modern flex items-center justify-center gap-2 sm:gap-3 text-sm sm:text-base"
+                      className="btn-modern flex items-center justify-center gap-2 sm:gap-3 text-sm sm:text-base px-8 py-4 text-lg font-bold min-w-[200px]"
                     >
                       <span className="text-lg sm:text-xl">🛍️</span>
                       <span>מסך הזמנות</span>
@@ -176,7 +180,7 @@ export default function HomePage() {
 
                     <Link
                       href="/admin/login"
-                      className="btn-modern flex items-center justify-center gap-2 sm:gap-3 text-sm sm:text-base"
+                      className="btn-modern flex items-center justify-center gap-2 sm:gap-3 text-sm sm:text-base px-8 py-4 text-lg font-bold min-w-[200px]"
                       style={{ background: "var(--secondary-gradient)" }}
                     >
                       <span className="text-lg sm:text-xl">👨‍💼</span>

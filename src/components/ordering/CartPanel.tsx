@@ -74,7 +74,12 @@ export function CartPanel({
                         {item.product.name}
                       </h3>
                       <p className="text-gray-600 text-xs sm:text-sm">
-                        ₪{item.product.price}
+                        ₪
+                        {(
+                          item.product.basePrice ||
+                          item.product.price ||
+                          0
+                        ).toFixed(2)}
                       </p>
 
                       {/* תוספות */}

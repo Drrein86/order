@@ -91,23 +91,7 @@ export function OrderingScreen({
   };
 
   return (
-    <div className="min-h-screen flex flex-col relative overflow-hidden">
-      {/* וידאו רקע */}
-      {business.backgroundVideo && (
-        <div className="fixed inset-0 z-0">
-          <video
-            src={business.backgroundVideo}
-            className="w-full h-full object-cover"
-            autoPlay
-            loop
-            muted
-            playsInline
-          />
-          {/* שכבת כהייה */}
-          <div className="absolute inset-0 bg-black/30"></div>
-        </div>
-      )}
-
+    <div className="min-h-screen flex flex-col relative bg-white">
       {/* כותרת עליונה */}
       <header
         className="bg-white/95 backdrop-blur-sm shadow-sm border-b-4 sticky top-0 z-30"
@@ -129,11 +113,16 @@ export function OrderingScreen({
                 <img
                   src={business.logo}
                   alt={business.name}
-                  className="w-8 h-8 sm:w-10 sm:h-10 rounded-full"
+                  className="w-10 h-10 sm:w-12 sm:h-12 rounded-full shadow-lg border-2 border-white object-cover"
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.src =
+                      "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=400&h=400&fit=crop&crop=center";
+                  }}
                 />
               )}
               <div>
-                <h1 className="text-base sm:text-xl font-bold text-gray-800 truncate max-w-32 sm:max-w-none">
+                <h1 className="text-base sm:text-xl font-bold text-gray-800 truncate max-w-32 sm:max-w-none bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                   {business.name}
                 </h1>
                 <p className="text-xs sm:text-sm text-gray-500">
@@ -169,47 +158,81 @@ export function OrderingScreen({
       </header>
 
       {/* תוכן ראשי */}
-      <div className="flex-1 flex flex-col lg:flex-row">
-        {/* פאנל מוצרים - צד שמאל גדול */}
-        <div className="flex-1 overflow-y-auto order-2 lg:order-1">
-          <ProductsPanel
-            products={selectedCategory?.products || []}
-            onAddToCart={(product, options, quantity) => {
-              const cartItem: CartItem = {
-                product,
-                quantity,
-                selectedOptions: Object.entries(options).map(
-                  ([optionId, value]) => ({
-                    optionId,
-                    optionName:
-                      product.productOptions?.find((opt) => opt.id === optionId)
-                        ?.name || "",
-                    valueId:
-                      typeof value === "object" && value.id
-                        ? value.id
-                        : undefined,
-                    valueName:
-                      typeof value === "object" && value.name ? value.name : "",
-                    additionalPrice:
-                      typeof value === "object" && value.additionalPrice
-                        ? value.additionalPrice
-                        : 0,
-                  })
-                ),
-                notes: "",
-              };
-              addToCart(cartItem);
-            }}
-          />
-        </div>
-
-        {/* פאנל קטגוריות - צד ימין קטן */}
-        <div className="lg:w-48 bg-white/95 backdrop-blur-sm shadow-lg overflow-y-auto order-1 lg:order-2">
+      <div className="flex-1 flex flex-row-reverse lg:flex-row-reverse">
+        {/* פאנל קטגוריות - צד ימין */}
+        <div className="lg:w-56 w-full max-w-xs bg-white/95 backdrop-blur-sm shadow-lg overflow-y-auto border-l border-gray-200 z-10">
           <CategoriesPanel
             categories={categories}
             selectedCategoryId={selectedCategoryId}
             onCategorySelect={setSelectedCategoryId}
             businessColors={business.colors}
+          />
+        </div>
+        {/* פאנל מוצרים */}
+        <div className="flex-1 overflow-y-auto bg-white">
+          <ProductsPanel
+            products={selectedCategory?.products || []}
+            onAddToCart={(product, options, quantity) => {
+              const selectedOptions = [];
+              for (const [optionId, value] of Object.entries(options)) {
+                const option = product.productOptions?.find(
+                  (opt) => opt.id === optionId
+                );
+                if (!option) continue;
+                if (option.type === "MULTIPLE_CHOICE" && Array.isArray(value)) {
+                  value.forEach((val) => {
+                    selectedOptions.push({
+                      optionId,
+                      optionName: option.name,
+                      valueId: val.id,
+                      valueName: val.name,
+                      additionalPrice: val.additionalPrice || 0,
+                    });
+                  });
+                } else if (option.type === "HALF_AND_HALF" && value) {
+                  if (value.left) {
+                    selectedOptions.push({
+                      optionId,
+                      optionName: option.name + " (שמאל)",
+                      valueId: value.left.id,
+                      valueName: value.left.name,
+                      additionalPrice: value.left.additionalPrice || 0,
+                    });
+                  }
+                  if (value.right) {
+                    selectedOptions.push({
+                      optionId,
+                      optionName: option.name + " (ימין)",
+                      valueId: value.right.id,
+                      valueName: value.right.name,
+                      additionalPrice: value.right.additionalPrice || 0,
+                    });
+                  }
+                } else if (typeof value === "object" && value !== null) {
+                  selectedOptions.push({
+                    optionId,
+                    optionName: option.name,
+                    valueId: value.id,
+                    valueName: value.name,
+                    additionalPrice: value.additionalPrice || 0,
+                  });
+                } else if (typeof value === "string") {
+                  selectedOptions.push({
+                    optionId,
+                    optionName: option.name,
+                    valueName: value,
+                    additionalPrice: 0,
+                  });
+                }
+              }
+              const cartItem = {
+                product,
+                quantity,
+                selectedOptions,
+                notes: "",
+              };
+              addToCart(cartItem);
+            }}
           />
         </div>
       </div>

@@ -466,7 +466,12 @@ export default function AdminSettingsPage() {
                             <img
                               src={formData.logo}
                               alt="לוגו נוכחי"
-                              className="w-24 h-24 sm:w-32 sm:h-32 object-cover rounded-lg border-2 border-gray-200"
+                              className="w-32 h-32 sm:w-40 sm:h-40 object-cover rounded-lg border-2 border-gray-200 shadow-lg"
+                              onError={(e) => {
+                                const target = e.target as HTMLImageElement;
+                                target.src =
+                                  "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=400&h=400&fit=crop&crop=center";
+                              }}
                             />
                             <button
                               onClick={(e) => {

@@ -63,9 +63,14 @@ export default function AdminDashboard() {
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
+              <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-lg">
+                🏢
+              </div>
               <h1 className="text-2xl font-bold text-gray-800">👨‍💼 לוח בקרה</h1>
               <span className="text-gray-500">|</span>
-              <span className="text-gray-600">{session.user.businessName}</span>
+              <span className="text-gray-600 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent font-semibold">
+                {session.user.businessName}
+              </span>
             </div>
 
             <div className="flex items-center gap-4">

@@ -17,7 +17,7 @@ export function formatCurrency(amount: number): string {
 // Calculate cart total
 export function calculateCartTotal(items: CartItem[]): number {
   return items.reduce((total, item) => {
-    const itemPrice = item.product.price
+    const itemPrice = item.product.basePrice || item.product.price || 0
     const optionsPrice = item.selectedOptions.reduce((sum, option) => sum + option.additionalPrice, 0)
     return total + ((itemPrice + optionsPrice) * item.quantity)
   }, 0)
@@ -25,7 +25,7 @@ export function calculateCartTotal(items: CartItem[]): number {
 
 // Calculate item total
 export function calculateItemTotal(item: CartItem): number {
-  const itemPrice = item.product.price
+  const itemPrice = item.product.basePrice || item.product.price || 0
   const optionsPrice = item.selectedOptions.reduce((sum, option) => sum + option.additionalPrice, 0)
   return (itemPrice + optionsPrice) * item.quantity
 }
