@@ -1,10 +1,11 @@
 {
-  "name": "מסעדת דמו",
-  "email": "demo@restaurant.com",
-  "phone": "050-1234567",
-  "address": "רחוב ראשי 123, תל אביב",
-  "description": "מסעדה לדוגמה לבדיקת המערכת",
+  "id": "cmcl7qfe00000vquscnsinlly",
+  "name": "פיצה אקספרס",
+  "email": "info@pizza-express.co.il",
+  "phone": "03-1234567",
+  "address": "רחוב הרצל 123, תל אביב",
+  "description": "הפיצה הטובה ביותר בעיר",
   "adminName": "מנהל ראשי",
-  "adminEmail": "admin@restaurant.com",
-  "adminPassword": "123456"
+  "adminEmail": "admin@pizza-express.co.il",
+  "adminPassword": "admin123"
 } 

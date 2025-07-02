@@ -48,15 +48,23 @@ export default function AdminCategoriesPage() {
         `/api/categories?businessId=${session?.user.businessId}`
       );
       if (response.ok) {
-        const data = await response.json();
-        // הוספת מספר מוצרים לכל קטגוריה (סימולציה)
-        const categoriesWithCount = data.map((cat: Category) => ({
-          ...cat,
-          productsCount: Math.floor(Math.random() * 10) + 1,
-        }));
-        setCategories(categoriesWithCount);
+        const responseData = await response.json();
+
+        if (responseData.success && responseData.data) {
+          // הוספת מספר מוצרים לכל קטגוריה (סימולציה)
+          const categoriesWithCount = responseData.data.map(
+            (cat: Category) => ({
+              ...cat,
+              productsCount: Math.floor(Math.random() * 10) + 1,
+            })
+          );
+          setCategories(categoriesWithCount);
+        } else {
+          setCategories([]);
+        }
       } else {
         setError("שגיאה בטעינת קטגוריות");
+        setCategories([]);
       }
     } catch (err) {
       console.error("Error loading categories:", err);

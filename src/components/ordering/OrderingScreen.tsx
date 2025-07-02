@@ -167,9 +167,33 @@ export function OrderingScreen({
         {/* פאנל מוצרים - מרכז */}
         <div className="flex-1 overflow-y-auto">
           <ProductsPanel
-            category={selectedCategory}
-            onAddToCart={addToCart}
-            businessColors={business.colors}
+            products={selectedCategory?.products || []}
+            onAddToCart={(product, options, quantity) => {
+              const cartItem: CartItem = {
+                product,
+                quantity,
+                selectedOptions: Object.entries(options).map(
+                  ([optionId, value]) => ({
+                    optionId,
+                    optionName:
+                      product.productOptions?.find((opt) => opt.id === optionId)
+                        ?.name || "",
+                    valueId:
+                      typeof value === "object" && value.id
+                        ? value.id
+                        : undefined,
+                    valueName:
+                      typeof value === "object" && value.name ? value.name : "",
+                    additionalPrice:
+                      typeof value === "object" && value.additionalPrice
+                        ? value.additionalPrice
+                        : 0,
+                  })
+                ),
+                notes: "",
+              };
+              addToCart(cartItem);
+            }}
           />
         </div>
       </div>

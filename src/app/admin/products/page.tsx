@@ -52,6 +52,34 @@ export default function AdminProductsPage() {
     loadData();
   }, [session, status, router]);
 
+  // טעינת מוצרים מחדש כאשר משתנה הקטגוריה
+  useEffect(() => {
+    if (session?.user.businessId && selectedCategory !== "all") {
+      loadProductsByCategory();
+    }
+  }, [selectedCategory, session?.user.businessId]);
+
+  const loadProductsByCategory = async () => {
+    try {
+      const productsRes = await fetch(
+        `/api/products?businessId=${session?.user.businessId}&categoryId=${selectedCategory}`
+      );
+      if (productsRes.ok) {
+        const productsData = await productsRes.json();
+        if (productsData.success && productsData.data) {
+          setProducts(productsData.data);
+        } else {
+          setProducts([]);
+        }
+      } else {
+        setProducts([]);
+      }
+    } catch (err) {
+      console.error("Error loading products by category:", err);
+      setError("שגיאה בטעינת מוצרים לפי קטגוריה");
+    }
+  };
+
   const loadData = async () => {
     try {
       setIsLoading(true);
@@ -62,45 +90,29 @@ export default function AdminProductsPage() {
       );
       if (categoriesRes.ok) {
         const categoriesData = await categoriesRes.json();
-        setCategories(categoriesData);
+        if (categoriesData.success && categoriesData.data) {
+          setCategories(categoriesData.data);
+        } else {
+          setCategories([]);
+        }
+      } else {
+        setCategories([]);
       }
 
-      // טעינת מוצרים (נדמה לפרוגרמה מכיוון שאין לנו API למוצרים עדיין)
-      // לעת עתה נשתמש בנתונים סטטיים
-      const mockProducts: Product[] = [
-        {
-          id: "1",
-          name: "סלט ירוק",
-          description: "סלט עלים ירוקים טרי",
-          price: 28,
-          isActive: true,
-          order: 1,
-          categoryId: "cat1",
-          category: { id: "cat1", name: "מנות ראשונות" },
-          productOptions: [],
-        },
-        {
-          id: "2",
-          name: "פיצה מרגריטה",
-          description: "רוטב עגבניות, מוצרלה וריחן",
-          price: 45,
-          isActive: true,
-          order: 1,
-          categoryId: "cat2",
-          category: { id: "cat2", name: "פיצות" },
-          productOptions: [
-            { id: "1", name: "גודל", type: "SINGLE_CHOICE", isRequired: true },
-            {
-              id: "2",
-              name: "תוספות",
-              type: "MULTIPLE_CHOICE",
-              isRequired: false,
-            },
-          ],
-        },
-      ];
-
-      setProducts(mockProducts);
+      // טעינת מוצרים אמיתיים ממסד הנתונים
+      const productsRes = await fetch(
+        `/api/products?businessId=${session?.user.businessId}`
+      );
+      if (productsRes.ok) {
+        const productsData = await productsRes.json();
+        if (productsData.success && productsData.data) {
+          setProducts(productsData.data);
+        } else {
+          setProducts([]);
+        }
+      } else {
+        setProducts([]);
+      }
     } catch (err) {
       console.error("Error loading data:", err);
       setError("שגיאה בטעינת נתונים");
@@ -114,19 +126,63 @@ export default function AdminProductsPage() {
     currentStatus: boolean
   ) => {
     try {
-      // כאן יהיה קריאה לAPI לעדכון סטטוס המוצר
-      console.log(`Toggle product ${productId} to ${!currentStatus}`);
+      const response = await fetch(`/api/products/${productId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          isActive: !currentStatus,
+        }),
+      });
 
-      setProducts((prev) =>
-        prev.map((product) =>
-          product.id === productId
-            ? { ...product, isActive: !currentStatus }
-            : product
-        )
-      );
+      if (response.ok) {
+        const result = await response.json();
+        if (result.success) {
+          setProducts((prev) =>
+            prev.map((product) =>
+              product.id === productId
+                ? { ...product, isActive: !currentStatus }
+                : product
+            )
+          );
+        } else {
+          setError(result.error || "שגיאה בעדכון סטטוס המוצר");
+        }
+      } else {
+        setError("שגיאה בעדכון סטטוס המוצר");
+      }
     } catch (err) {
       console.error("Error toggling product status:", err);
       setError("שגיאה בעדכון סטטוס המוצר");
+    }
+  };
+
+  const deleteProduct = async (productId: string) => {
+    if (!confirm("האם אתה בטוח שברצונך למחוק מוצר זה?")) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/products/${productId}`, {
+        method: "DELETE",
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        if (result.success) {
+          setProducts((prev) =>
+            prev.filter((product) => product.id !== productId)
+          );
+        } else {
+          setError(result.error || "שגיאה במחיקת המוצר");
+        }
+      } else {
+        setError("שגיאה במחיקת המוצר");
+      }
+    } catch (err) {
+      console.error("Error deleting product:", err);
+      setError("שגיאה במחיקת המוצר");
     }
   };
 
@@ -211,11 +267,12 @@ export default function AdminProductsPage() {
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               >
                 <option value="all">כל הקטגוריות</option>
-                {categories.map((category) => (
-                  <option key={category.id} value={category.id}>
-                    {category.name}
-                  </option>
-                ))}
+                {Array.isArray(categories) &&
+                  categories.map((category) => (
+                    <option key={category.id} value={category.id}>
+                      {category.name}
+                    </option>
+                  ))}
               </select>
             </div>
 
@@ -269,7 +326,7 @@ export default function AdminProductsPage() {
           <div className="bg-white rounded-xl shadow-lg p-6 text-center">
             <div className="text-3xl text-purple-500 mb-2">📂</div>
             <p className="text-2xl font-bold text-gray-800">
-              {categories.length}
+              {Array.isArray(categories) ? categories.length : 0}
             </p>
             <p className="text-sm text-gray-600">קטגוריות</p>
           </div>
@@ -372,13 +429,19 @@ export default function AdminProductsPage() {
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex gap-2">
-                        <button className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-lg text-sm transition-colors">
+                        <Link
+                          href={`/admin/products/edit/${product.id}`}
+                          className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-lg text-sm transition-colors inline-block"
+                        >
                           ערוך
-                        </button>
+                        </Link>
                         <button className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-lg text-sm transition-colors">
                           תוספות
                         </button>
-                        <button className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg text-sm transition-colors">
+                        <button
+                          onClick={() => deleteProduct(product.id)}
+                          className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg text-sm transition-colors"
+                        >
                           מחק
                         </button>
                       </div>

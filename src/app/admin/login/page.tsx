@@ -80,7 +80,7 @@ export default function AdminLoginPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
-              placeholder="admin@restaurant.com"
+              placeholder="admin@pizza-express.co.il"
               disabled={isLoading}
               required
             />
@@ -135,13 +135,13 @@ export default function AdminLoginPage() {
             <div className="flex justify-between">
               <span className="text-gray-600">אימיל:</span>
               <span className="font-mono bg-gray-200 px-2 py-1 rounded text-xs">
-                admin@restaurant.com
+                admin@pizza-express.co.il
               </span>
             </div>
             <div className="flex justify-between">
               <span className="text-gray-600">סיסמה:</span>
               <span className="font-mono bg-gray-200 px-2 py-1 rounded text-xs">
-                123456
+                admin123
               </span>
             </div>
           </div>

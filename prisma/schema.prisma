@@ -32,6 +32,9 @@ model Business {
   orders           Order[]
   businessUsers    BusinessUser[]
   businessSettings BusinessSettings?
+  customers        Customer[]
+  activityLogs     ActivityLog[]
+  products         Product[]
 
   @@map("businesses")
 }
@@ -40,26 +43,25 @@ model Business {
 model BusinessUser {
   id         String           @id @default(cuid())
   businessId String
-  email      String
+  email      String           @unique
   password   String
   name       String
-  role       BusinessUserRole @default(ADMIN)
+  role       BusinessUserRole @default(STAFF)
   isActive   Boolean          @default(true)
   createdAt  DateTime         @default(now())
   updatedAt  DateTime         @updatedAt
 
   // קשרים
-  business Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  business     Business      @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  activityLogs ActivityLog[]
 
-  @@unique([businessId, email])
   @@map("business_users")
 }
 
 enum BusinessUserRole {
-  SUPER_ADMIN
-  ADMIN
-  VIEWER
-  CHEF
+  OWNER
+  MANAGER
+  STAFF
 }
 
 // הגדרות עסק
@@ -109,17 +111,20 @@ model Category {
 model Product {
   id          String   @id @default(cuid())
   categoryId  String
+  businessId  String? // עדכון הדרגתי לנתונים קיימים
   name        String
   description String?
-  price       Float
+  basePrice   Float? // עדכון הדרגתי לנתונים קיימים 
+  price       Float? // השדה הישן לתאימות לאחור
   image       String? // URL לתמונה
   isActive    Boolean  @default(true)
-  order       Int      @default(0) // סדר תצוגה
+  sortOrder   Int      @default(0) // סדר תצוגה
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
   // קשרים
   category       Category        @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  business       Business?       @relation(fields: [businessId], references: [id], onDelete: Cascade)
   productOptions ProductOption[]
   orderItems     OrderItem[]
 
@@ -128,18 +133,23 @@ model Product {
 
 // תוספות ואפשרויות למוצרים
 model ProductOption {
-  id            String            @id @default(cuid())
-  productId     String
-  name          String
-  type          ProductOptionType
-  isRequired    Boolean           @default(false)
-  maxSelections Int? // מקסימום בחירות (null = ללא הגבלה)
-  order         Int               @default(0)
-  createdAt     DateTime          @default(now())
-  updatedAt     DateTime          @updatedAt
+  id           String            @id @default(cuid())
+  name         String // "גודל פיצה", "תוספות", "רכיבי המבורגר"
+  type         ProductOptionType @default(SINGLE_CHOICE)
+  isRequired   Boolean           @default(false)
+  sortOrder    Int               @default(0)
+  isActive     Boolean           @default(true)
+  // תמיכה באפשרויות מתקדמות
+  isHalfOption Boolean           @default(false) // עבור פיצה חצי/שלמה
+  parentId     String? // עבור תת-אפשרויות
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+  productId    String
 
   // קשרים
   product             Product              @relation(fields: [productId], references: [id], onDelete: Cascade)
+  parent              ProductOption?       @relation("OptionHierarchy", fields: [parentId], references: [id])
+  children            ProductOption[]      @relation("OptionHierarchy")
   productOptionValues ProductOptionValue[]
   orderItemOptions    OrderItemOption[]
 
@@ -147,22 +157,26 @@ model ProductOption {
 }
 
 enum ProductOptionType {
-  SINGLE_CHOICE // בחירה יחידה (רדיו)
-  MULTIPLE_CHOICE // בחירה מרובה (צ'קבוקס)
-  TEXT_INPUT // טקסט חופשי
-  SIZE_SELECTION // בחירת גודל
-  HALF_AND_HALF // חצי-חצי (לפיצה)
+  SINGLE_CHOICE // בחירה יחידה (גודל פיצה)
+  MULTIPLE_CHOICE // בחירה מרובה (תוספות)
+  TEXT_INPUT // הזנה חופשית (הערות)
+  QUANTITY // כמות (מספר ציפס)
+  HALF_AND_HALF // חצי וחצי עבור פיצה
 }
 
 // ערכי תוספות
 model ProductOptionValue {
   id              String   @id @default(cuid())
-  productOptionId String
-  name            String
+  name            String // "קטנה", "גדולה", "חצי", "שלמה", "קטשופ", "מיונז"
   additionalPrice Float    @default(0)
-  order           Int      @default(0)
+  isDefault       Boolean  @default(false)
+  sortOrder       Int      @default(0)
+  isActive        Boolean  @default(true)
+  // תמיכה במיקום על פיצה
+  halfPosition    String? // "LEFT", "RIGHT", "FULL"
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
+  productOptionId String
 
   // קשרים
   productOption    ProductOption     @relation(fields: [productOptionId], references: [id], onDelete: Cascade)
@@ -181,7 +195,9 @@ model Customer {
   updatedAt DateTime @updatedAt
 
   // קשרים
-  orders Order[]
+  orders     Order[]
+  Business   Business? @relation(fields: [businessId], references: [id])
+  businessId String?
 
   @@unique([phone])
   @@map("customers")
@@ -246,13 +262,16 @@ model OrderItem {
 // תוספות שנבחרו לפריטים בהזמנה
 model OrderItemOption {
   id                   String   @id @default(cuid())
+  textValue            String? // עבור הזנה חופשית
+  additionalPrice      Float    @default(0)
+  // תמיכה במיקום על פיצה
+  halfPosition         String? // "LEFT", "RIGHT", "FULL"
+  quantity             Int      @default(1) // כמות התוספת (עבור המבורגר וכד')
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
   orderItemId          String
   productOptionId      String
   productOptionValueId String?
-  textValue            String? // לתוספות טקסט חופשי
-  additionalPrice      Float    @default(0)
-  createdAt            DateTime @default(now())
-  updatedAt            DateTime @updatedAt
 
   // קשרים
   orderItem          OrderItem           @relation(fields: [orderItemId], references: [id], onDelete: Cascade)
@@ -264,14 +283,19 @@ model OrderItemOption {
 
 // לוג פעולות (אופציונלי)
 model ActivityLog {
-  id         String   @id @default(cuid())
-  businessId String
-  userId     String?
-  action     String
-  details    Json?
-  ipAddress  String?
-  userAgent  String?
-  createdAt  DateTime @default(now())
+  id             String   @id @default(cuid())
+  action         String
+  entityType     String
+  entityId       String
+  oldData        Json?
+  newData        Json?
+  createdAt      DateTime @default(now())
+  businessUserId String
+  businessId     String
+
+  // קשרים
+  businessUser BusinessUser @relation(fields: [businessUserId], references: [id])
+  business     Business     @relation(fields: [businessId], references: [id], onDelete: Cascade)
 
   @@map("activity_logs")
 }

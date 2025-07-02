@@ -145,6 +145,20 @@ NEXTAUTH_URL = https://your-app.vercel.app
 
 לחץ **Deploy** והמתן לסיום הבנייה.
 
+### שלב 5: הגדרת מסד נתונים בפרודקשן
+
+\`\`\`bash
+
+# הרץ מיגרציות על הפרודקשן
+
+DATABASE_URL="<railway-url>" npx prisma migrate deploy
+DATABASE_URL="<railway-url>" npx prisma generate
+
+# יצירת נתוני דמו
+
+DATABASE_URL="<railway-url>" npx tsx scripts/seed.ts
+\`\`\`
+
 ---
 
 ## 🗄️ הגדרת Railway Database
@@ -179,7 +193,7 @@ DATABASE_URL="<railway-url>" npx prisma generate
 
 - **URL**: `/admin/login`
 - **אימיל**: `admin@restaurant.com`
-- **סיסמה**: `123456`
+- **סיסמה**: `admin123`
 
 ---
 
