@@ -23,6 +23,11 @@ interface Product {
     name: string;
     type: string;
     isRequired: boolean;
+    productOptionValues: {
+      id: string;
+      name: string;
+      price: number;
+    }[];
   }[];
 }
 
@@ -230,9 +235,12 @@ export default function AdminProductsPage() {
               </h1>
             </div>
 
-            <button className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg font-bold transition-colors">
+            <Link
+              href="/admin/products/new"
+              className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg font-bold transition-colors"
+            >
               + הוסף מוצר חדש
-            </button>
+            </Link>
           </div>
         </div>
       </header>
@@ -367,7 +375,7 @@ export default function AdminProductsPage() {
                           <img
                             src={product.image}
                             alt={product.name}
-                            className="w-12 h-12 rounded-lg object-cover"
+                            className="w-12 h-12 rounded-lg object-contain bg-gray-50"
                           />
                         ) : (
                           <div className="w-12 h-12 bg-gray-200 rounded-lg flex items-center justify-center">
@@ -402,8 +410,14 @@ export default function AdminProductsPage() {
                           <span
                             key={option.id}
                             className="bg-purple-100 text-purple-800 px-2 py-1 rounded-full text-xs"
+                            title={`${option.name} (${option.productOptionValues.length} ערכים)`}
                           >
                             {option.name}
+                            {option.productOptionValues.length > 0 && (
+                              <span className="text-purple-600 font-bold">
+                                ({option.productOptionValues.length})
+                              </span>
+                            )}
                           </span>
                         ))}
                         {product.productOptions.length === 0 && (
@@ -435,9 +449,12 @@ export default function AdminProductsPage() {
                         >
                           ערוך
                         </Link>
-                        <button className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-lg text-sm transition-colors">
+                        <Link
+                          href={`/admin/products/${product.id}/options`}
+                          className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-lg text-sm transition-colors inline-block"
+                        >
                           תוספות
-                        </button>
+                        </Link>
                         <button
                           onClick={() => deleteProduct(product.id)}
                           className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg text-sm transition-colors"

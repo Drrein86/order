@@ -107,7 +107,7 @@ export function CartPanel({
                         <img
                           src={item.product.image}
                           alt={item.product.name}
-                          className="w-full h-full object-cover"
+                          className="w-full h-full object-contain bg-gray-50"
                         />
                       ) : (
                         <div className="w-full h-full bg-gray-100 flex items-center justify-center text-2xl">

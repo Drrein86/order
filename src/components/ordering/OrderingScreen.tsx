@@ -194,7 +194,7 @@ export function OrderingScreen({
                     <img
                       src={category.image}
                       alt={category.name}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-contain bg-gray-50"
                       onError={(e) => {
                         const target = e.target as HTMLImageElement;
                         target.style.display = "none";

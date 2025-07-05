@@ -92,6 +92,7 @@ export default function AdminSettingsPage() {
         const response = await businessRes.json();
         const businessData = response.data || response;
         console.log("Business data loaded:", businessData);
+        console.log("Logo URL:", businessData.logo);
         setBusiness(businessData);
         setFormData({
           name: businessData.name || "",
@@ -243,28 +244,58 @@ export default function AdminSettingsPage() {
     if (!file) return;
 
     setUploadingLogo(true);
+    setError("");
+    setSuccess("");
+
     const formData = new FormData();
     formData.append("logo", file);
 
     try {
-      const response = await fetch("/api/upload/logo", {
+      // העלאת הקובץ
+      const uploadResponse = await fetch("/api/upload/logo", {
         method: "POST",
         body: formData,
       });
 
-      if (response.ok) {
-        const data = await response.json();
-        console.log("Logo uploaded successfully:", data);
+      if (uploadResponse.ok) {
+        const uploadData = await uploadResponse.json();
+        console.log("Logo uploaded successfully:", uploadData);
+
+        // עדכון ה-state המקומי
         setFormData((prev) => ({
           ...prev,
-          logo: data.url,
+          logo: uploadData.url,
         }));
-        setSuccess("הלוגו הועלה בהצלחה!");
+
+        // שמירה בבסיס הנתונים
+        if (business && business.id) {
+          const saveResponse = await fetch(`/api/businesses/${business.id}`, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              ...formData,
+              logo: uploadData.url,
+            }),
+          });
+
+          if (saveResponse.ok) {
+            setSuccess("הלוגו הועלה ונשמר בהצלחה!");
+            // רענון הנתונים מהשרת
+            await loadData();
+          } else {
+            const saveError = await saveResponse.json();
+            console.error("Save error:", saveError);
+            setError("הלוגו הועלה אבל לא נשמר בבסיס הנתונים");
+          }
+        }
+
         setTimeout(() => setSuccess(""), 3000);
       } else {
-        const errorData = await response.json();
+        const errorData = await uploadResponse.json();
         console.error("Upload error:", errorData);
-        setError("שגיאה בהעלאת הלוגו");
+        setError(`שגיאה בהעלאת הלוגו: ${errorData.error || "שגיאה לא ידועה"}`);
       }
     } catch (error) {
       console.error("Error uploading logo:", error);
@@ -481,15 +512,31 @@ export default function AdminSettingsPage() {
                                   "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=400&h=400&fit=crop&crop=center";
                               }}
                             />
-                            <button
-                              onClick={(e) => {
-                                e.preventDefault();
-                                setFormData((prev) => ({ ...prev, logo: "" }));
-                              }}
-                              className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm hover:bg-red-600"
-                            >
-                              ×
-                            </button>
+                            <div className="absolute -top-2 -right-2 flex gap-1">
+                              <button
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  setFormData((prev) => ({
+                                    ...prev,
+                                    logo: "",
+                                  }));
+                                }}
+                                className="bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm hover:bg-red-600"
+                                title="מחק לוגו"
+                              >
+                                ×
+                              </button>
+                              <button
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  loadData();
+                                }}
+                                className="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm hover:bg-blue-600"
+                                title="רענן"
+                              >
+                                ↻
+                              </button>
+                            </div>
                           </div>
                         )}
                         <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-3">

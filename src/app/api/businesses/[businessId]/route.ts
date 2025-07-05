@@ -72,6 +72,9 @@ export async function PUT(
     const { businessId } = await params
     const body = await request.json()
 
+    console.log('Updating business:', businessId)
+    console.log('Request body:', body)
+
     // עדכון פרטי העסק
     const updatedBusiness = await prisma.business.update({
       where: { id: businessId },
@@ -116,6 +119,8 @@ export async function PUT(
         businessSettings: true
       }
     })
+
+    console.log('Business updated successfully:', updatedBusiness)
 
     return NextResponse.json({
       success: true,

@@ -6,15 +6,13 @@ const CreateProductOptionSchema = z.object({
   name: z.string().min(1, 'שם התוספת נדרש'),
   type: z.enum(['SINGLE_CHOICE', 'MULTIPLE_CHOICE']),
   isRequired: z.boolean(),
-  sortOrder: z.number().optional(),
   values: z.array(z.object({
     name: z.string().min(1, 'שם הערך נדרש'),
-    price: z.number().min(0, 'מחיר חייב להיות חיובי'),
-    sortOrder: z.number().optional()
-  })).min(1, 'נדרש לפחות ערך אחד')
+    price: z.number().min(0, 'מחיר חייב להיות חיובי')
+  })).min(1, 'חייב להיות לפחות ערך אחד')
 })
 
-// יצירת תוספת חדשה למוצר
+// הוספת תוספת חדשה למוצר
 export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ productId: string }> }
@@ -26,22 +24,23 @@ export async function POST(
 
     // קבלת הסדר הגבוה ביותר הנוכחי
     const lastOption = await prisma.productOption.findFirst({
-      where: { productId: productId },
+      where: { productId },
       orderBy: { sortOrder: 'desc' }
     })
 
+    // יצירת התוספת עם ערכיה
     const productOption = await prisma.productOption.create({
       data: {
-        productId: productId,
+        productId,
         name: validatedData.name,
         type: validatedData.type,
         isRequired: validatedData.isRequired,
-        sortOrder: validatedData.sortOrder ?? (lastOption?.sortOrder ?? 0) + 1,
+        sortOrder: (lastOption?.sortOrder ?? 0) + 1,
         productOptionValues: {
           create: validatedData.values.map((value, index) => ({
             name: value.name,
             price: value.price,
-            sortOrder: value.sortOrder ?? index + 1
+            sortOrder: index + 1
           }))
         }
       },
@@ -55,7 +54,7 @@ export async function POST(
     return NextResponse.json({
       success: true,
       data: productOption,
-      message: 'התוספת נוצרה בהצלחה'
+      message: 'התוספת נוספה בהצלחה'
     })
 
   } catch (error) {

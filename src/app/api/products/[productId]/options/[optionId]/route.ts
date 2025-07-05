@@ -7,15 +7,14 @@ export async function DELETE(
   { params }: { params: Promise<{ productId: string; optionId: string }> }
 ) {
   try {
-    const { optionId } = await params
-    // מחיקת כל ערכי התוספת תחילה
-    await prisma.productOptionValue.deleteMany({
-      where: { productOptionId: optionId }
-    })
+    const { productId, optionId } = await params
 
-    // מחיקת התוספת עצמה
+    // מחיקת התוספת (הערכים יימחקו אוטומטית בגלל CASCADE)
     await prisma.productOption.delete({
-      where: { id: optionId }
+      where: { 
+        id: optionId,
+        productId // וידוא שהתוספת שייכת למוצר הנכון
+      }
     })
 
     return NextResponse.json({

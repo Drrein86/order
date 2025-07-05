@@ -335,7 +335,7 @@ export function ProductsPanel({ products, onAddToCart }: ProductsPanelProps) {
                 <img
                   src={product.image}
                   alt={product.name}
-                  className="w-full h-full object-cover transition-transform duration-300 hover:scale-110"
+                  className="w-full h-full object-contain bg-gray-50 transition-transform duration-300 hover:scale-105"
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center text-3xl sm:text-4xl bg-gradient-to-br from-gray-100 to-gray-200">
@@ -382,7 +382,7 @@ export function ProductsPanel({ products, onAddToCart }: ProductsPanelProps) {
                   <img
                     src={selectedProduct.image}
                     alt={selectedProduct.name}
-                    className="w-16 h-16 rounded-xl object-cover"
+                    className="w-16 h-16 rounded-xl object-contain bg-gray-50"
                   />
                 )}
                 <div className="flex-1">

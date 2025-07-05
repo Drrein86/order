@@ -10,31 +10,6 @@ interface Category {
   name: string;
 }
 
-interface Product {
-  id: string;
-  name: string;
-  description?: string;
-  price: number;
-  image?: string;
-  isActive: boolean;
-  categoryId: string;
-  category: {
-    id: string;
-    name: string;
-  };
-  productOptions: {
-    id: string;
-    name: string;
-    type: string;
-    isRequired: boolean;
-    productOptionValues: {
-      id: string;
-      name: string;
-      price: number;
-    }[];
-  }[];
-}
-
 interface ProductFormData {
   name: string;
   description: string;
@@ -44,16 +19,9 @@ interface ProductFormData {
   isActive: boolean;
 }
 
-export default function EditProductPage({
-  params,
-}: {
-  params: { productId: string };
-}) {
+export default function NewProductPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
-  const { productId } = params;
-
-  const [product, setProduct] = useState<Product | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -78,47 +46,24 @@ export default function EditProductPage({
       return;
     }
 
-    loadData();
-  }, [session, status, router, productId]);
+    loadCategories();
+  }, [session, status, router]);
 
-  const loadData = async () => {
+  const loadCategories = async () => {
     try {
       setIsLoading(true);
-
-      // טעינת המוצר
-      const productRes = await fetch(`/api/products/${productId}`);
-      if (productRes.ok) {
-        const productData = await productRes.json();
-        if (productData.success && productData.data) {
-          setProduct(productData.data);
-          setFormData({
-            name: productData.data.name,
-            description: productData.data.description || "",
-            price: productData.data.price,
-            categoryId: productData.data.categoryId,
-            image: productData.data.image || "",
-            isActive: productData.data.isActive,
-          });
-        } else {
-          setError("המוצר לא נמצא");
-        }
-      } else {
-        setError("שגיאה בטעינת המוצר");
-      }
-
-      // טעינת קטגוריות
-      const categoriesRes = await fetch(
+      const response = await fetch(
         `/api/categories?businessId=${session?.user.businessId}`
       );
-      if (categoriesRes.ok) {
-        const categoriesData = await categoriesRes.json();
-        if (categoriesData.success && categoriesData.data) {
-          setCategories(categoriesData.data);
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success && data.data) {
+          setCategories(data.data);
         }
       }
     } catch (err) {
-      console.error("Error loading data:", err);
-      setError("שגיאה בטעינת נתונים");
+      console.error("Error loading categories:", err);
+      setError("שגיאה בטעינת קטגוריות");
     } finally {
       setIsLoading(false);
     }
@@ -175,31 +120,34 @@ export default function EditProductPage({
     setSuccess("");
 
     try {
-      const response = await fetch(`/api/products/${productId}`, {
-        method: "PUT",
+      const response = await fetch("/api/products", {
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          ...formData,
+          businessId: session?.user.businessId,
+        }),
       });
 
       if (response.ok) {
         const result = await response.json();
         if (result.success) {
-          setSuccess("המוצר עודכן בהצלחה!");
+          setSuccess("המוצר נוסף בהצלחה!");
           setTimeout(() => {
             router.push("/admin/products");
           }, 2000);
         } else {
-          setError(result.error || "שגיאה בעדכון המוצר");
+          setError(result.error || "שגיאה בהוספת המוצר");
         }
       } else {
         const errorData = await response.json();
-        setError(`שגיאה בעדכון המוצר: ${errorData.error || "שגיאה לא ידועה"}`);
+        setError(`שגיאה בהוספת המוצר: ${errorData.error || "שגיאה לא ידועה"}`);
       }
     } catch (error) {
-      console.error("Error updating product:", error);
-      setError("שגיאה בעדכון המוצר");
+      console.error("Error creating product:", error);
+      setError("שגיאה בהוספת המוצר");
     } finally {
       setSaving(false);
     }
@@ -216,7 +164,7 @@ export default function EditProductPage({
     );
   }
 
-  if (!session || !product) {
+  if (!session) {
     return null;
   }
 
@@ -234,7 +182,9 @@ export default function EditProductPage({
                 ← חזרה למוצרים
               </Link>
               <span className="text-gray-400">|</span>
-              <h1 className="text-2xl font-bold text-gray-800">✏️ ערוך מוצר</h1>
+              <h1 className="text-2xl font-bold text-gray-800">
+                ➕ הוסף מוצר חדש
+              </h1>
             </div>
           </div>
         </div>
@@ -255,7 +205,7 @@ export default function EditProductPage({
           </div>
         )}
 
-        {/* טופס עריכת מוצר */}
+        {/* טופס הוספת מוצר */}
         <div className="bg-white rounded-xl shadow-lg p-6">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -407,72 +357,21 @@ export default function EditProductPage({
               </label>
             </div>
 
-            {/* תוספות קיימות */}
-            {product && product.productOptions.length > 0 && (
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  תוספות קיימות
-                </label>
-                <div className="space-y-2">
-                  {product.productOptions.map((option) => (
-                    <div
-                      key={option.id}
-                      className="bg-gray-50 rounded-lg p-3 border border-gray-200"
-                    >
-                      <div className="flex items-center justify-between mb-2">
-                        <h4 className="font-medium text-gray-800">
-                          {option.name}
-                        </h4>
-                        <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">
-                          {option.type === "SINGLE_CHOICE"
-                            ? "בחירה יחידה"
-                            : "בחירה מרובה"}
-                          {option.isRequired && " | נדרש"}
-                        </span>
-                      </div>
-                      {option.productOptionValues.length > 0 && (
-                        <div className="flex flex-wrap gap-1">
-                          {option.productOptionValues.map((value) => (
-                            <span
-                              key={value.id}
-                              className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full"
-                            >
-                              {value.name}
-                              {value.price > 0 && ` (+₪${value.price})`}
-                            </span>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
             {/* כפתורי פעולה */}
-            <div className="flex justify-between items-center pt-6">
+            <div className="flex justify-end gap-4 pt-6">
               <Link
-                href={`/admin/products/${productId}/options`}
-                className="px-6 py-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg transition-colors"
+                href="/admin/products"
+                className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
               >
-                🔧 ניהול תוספות
+                ביטול
               </Link>
-
-              <div className="flex gap-4">
-                <Link
-                  href="/admin/products"
-                  className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
-                >
-                  ביטול
-                </Link>
-                <button
-                  type="submit"
-                  disabled={saving}
-                  className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                >
-                  {saving ? "שומר..." : "שמור שינויים"}
-                </button>
-              </div>
+              <button
+                type="submit"
+                disabled={saving}
+                className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              >
+                {saving ? "מוסיף..." : "הוסף מוצר"}
+              </button>
             </div>
           </form>
         </div>
