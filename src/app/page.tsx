@@ -86,7 +86,7 @@ export default function HomePage() {
       {/* תוכן ראשי */}
       <main className="max-w-6xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
         {/* סטטיסטיקות מהירות */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 mb-12 sm:mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 sm:gap-8 mb-12 sm:mb-16">
           <div className="card-modern p-6 sm:p-8 text-center hover-lift animate-fade-in-up">
             <div className="w-16 h-16 sm:w-20 sm:h-20 gradient-success rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6 text-2xl sm:text-3xl">
               📱
@@ -126,6 +126,21 @@ export default function HomePage() {
             </h3>
             <p className="text-gray-600 text-sm sm:text-base">
               שליחה אוטומטית למייל, WhatsApp ומדפסת
+            </p>
+          </div>
+
+          <div
+            className="card-modern p-6 sm:p-8 text-center hover-lift animate-fade-in-up"
+            style={{ animationDelay: "0.6s" }}
+          >
+            <div className="w-16 h-16 sm:w-20 sm:h-20 gradient-primary rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6 text-2xl sm:text-3xl">
+              📱
+            </div>
+            <h3 className="text-xl sm:text-2xl font-bold text-gray-800 mb-2 sm:mb-3">
+              QR Code / NFC
+            </h3>
+            <p className="text-gray-600 text-sm sm:text-base">
+              גישה מהירה לתפריט דרך סריקת QR או NFC
             </p>
           </div>
         </div>
@@ -186,6 +201,18 @@ export default function HomePage() {
                       <span className="text-lg sm:text-xl">👨‍💼</span>
                       <span>Admin</span>
                     </Link>
+
+                    <Link
+                      href={`/screen/${business.id}?nfc=true`}
+                      className="btn-modern flex items-center justify-center gap-2 sm:gap-3 text-sm sm:text-base px-8 py-4 text-lg font-bold min-w-[200px]"
+                      style={{
+                        background:
+                          "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                      }}
+                    >
+                      <span className="text-lg sm:text-xl">📱</span>
+                      <span>QR Code / NFC</span>
+                    </Link>
                   </div>
                 </div>
               </div>
@@ -237,6 +264,76 @@ export default function HomePage() {
           </div>
         </div>
 
+        {/* QR Code / NFC Section */}
+        <div className="card-modern p-8 sm:p-12 mb-12 sm:mb-16">
+          <div className="text-center mb-8">
+            <div className="w-20 h-20 sm:w-24 sm:h-24 gradient-primary rounded-full flex items-center justify-center mx-auto mb-6 text-3xl sm:text-4xl">
+              📱
+            </div>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 text-gradient">
+              QR Code & NFC
+            </h2>
+            <p className="text-gray-600 text-lg sm:text-xl max-w-3xl mx-auto">
+              סרוק QR Code או השתמש ב-NFC כדי לגשת ישירות לתפריט המסעדה
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="text-center">
+              <div className="w-16 h-16 sm:w-20 sm:h-20 gradient-success rounded-full flex items-center justify-center mx-auto mb-4 text-2xl sm:text-3xl">
+                📱
+              </div>
+              <h3 className="text-xl sm:text-2xl font-bold text-gray-800 mb-3">
+                QR Code
+              </h3>
+              <p className="text-gray-600 mb-4">
+                הדפס QR Code על השולחנות או התפריטים. הלקוחות יסרקו ויגיעו
+                ישירות לתפריט
+              </p>
+              <div className="bg-gray-100 rounded-lg p-4 mb-4">
+                <div className="text-sm text-gray-500 mb-2">דוגמה ל-URL:</div>
+                <div className="font-mono text-xs bg-white p-2 rounded border">
+                  https://your-domain.com/screen/{businesses[0]?.id}?nfc=true
+                </div>
+              </div>
+            </div>
+
+            <div className="text-center">
+              <div className="w-16 h-16 sm:w-20 sm:h-20 gradient-accent rounded-full flex items-center justify-center mx-auto mb-4 text-2xl sm:text-3xl">
+                🔄
+              </div>
+              <h3 className="text-xl sm:text-2xl font-bold text-gray-800 mb-3">
+                NFC
+              </h3>
+              <p className="text-gray-600 mb-4">
+                הצמד את הטלפון לתג NFC על השולחן ופתח את התפריט אוטומטית
+              </p>
+              <div className="bg-gray-100 rounded-lg p-4 mb-4">
+                <div className="text-sm text-gray-500 mb-2">
+                  נתונים לתג NFC:
+                </div>
+                <div className="font-mono text-xs bg-white p-2 rounded border">
+                  URL: https://your-domain.com/screen/{businesses[0]?.id}
+                  ?nfc=true
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="text-center mt-8">
+            <Link
+              href={`/screen/${businesses[0]?.id}?nfc=true`}
+              className="btn-modern inline-flex items-center justify-center gap-3 text-lg px-8 py-4"
+              style={{
+                background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+              }}
+            >
+              <span className="text-2xl">📱</span>
+              <span>נסה עכשיו</span>
+            </Link>
+          </div>
+        </div>
+
         {/* CTA */}
         <div className="card-modern p-8 sm:p-12 text-center">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 sm:mb-6 text-gradient">
@@ -261,6 +358,16 @@ export default function HomePage() {
             >
               <span className="text-xl">👀</span>
               <span>צפה בדמו</span>
+            </Link>
+            <Link
+              href={`/screen/${businesses[0]?.id}?nfc=true`}
+              className="btn-modern flex items-center justify-center gap-3 text-sm sm:text-base"
+              style={{
+                background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+              }}
+            >
+              <span className="text-xl">📱</span>
+              <span>QR Code / NFC</span>
             </Link>
           </div>
         </div>

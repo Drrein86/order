@@ -1,13 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import { OrderingScreen } from "@/components/ordering/OrderingScreen";
 import { WelcomeScreen } from "@/components/ordering/WelcomeScreen";
 import { BusinessConfig, CategoryWithProducts } from "@/lib/types";
 
 export default function OrderingPage() {
   const params = useParams();
+  const searchParams = useSearchParams();
   const businessId = params.businessId as string;
 
   const [business, setBusiness] = useState<BusinessConfig | null>(null);
@@ -55,6 +56,19 @@ export default function OrderingPage() {
           setError("מסך ההזמנות סגור כרגע. אנא פנו אלינו בטלפון.");
           return;
         }
+
+        // בדיקה אם יש פרמטר direct או nfc - אם כן, דלג ישירות לתפריט
+        const direct = searchParams.get("direct");
+        const nfc = searchParams.get("nfc");
+        const orderTypeParam = searchParams.get("type");
+
+        if (direct === "true" || nfc === "true") {
+          // אם יש פרמטר type, השתמש בו, אחרת ברירת מחדל ל-DINE_IN
+          const defaultOrderType =
+            orderTypeParam === "TAKEAWAY" ? "TAKEAWAY" : "DINE_IN";
+          setOrderType(defaultOrderType);
+          setCurrentStep("ordering");
+        }
       } catch (err) {
         console.error("Error loading business data:", err);
         setError("שגיאה בטעינת נתוני העסק. אנא נסו שוב מאוחר יותר.");
@@ -64,7 +78,7 @@ export default function OrderingPage() {
     };
 
     loadBusinessData();
-  }, [businessId]);
+  }, [businessId, searchParams]);
 
   const handleOrderTypeSelect = (type: "DINE_IN" | "TAKEAWAY") => {
     setOrderType(type);

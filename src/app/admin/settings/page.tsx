@@ -254,13 +254,21 @@ export default function AdminSettingsPage() {
 
       if (response.ok) {
         const data = await response.json();
+        console.log("Logo uploaded successfully:", data);
         setFormData((prev) => ({
           ...prev,
           logo: data.url,
         }));
+        setSuccess("הלוגו הועלה בהצלחה!");
+        setTimeout(() => setSuccess(""), 3000);
+      } else {
+        const errorData = await response.json();
+        console.error("Upload error:", errorData);
+        setError("שגיאה בהעלאת הלוגו");
       }
     } catch (error) {
       console.error("Error uploading logo:", error);
+      setError("שגיאה בהעלאת הלוגו");
     } finally {
       setUploadingLogo(false);
     }
@@ -451,7 +459,7 @@ export default function AdminSettingsPage() {
                             name: e.target.value,
                           }))
                         }
-                        className="w-full px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
                         required
                       />
                     </div>
@@ -521,7 +529,7 @@ export default function AdminSettingsPage() {
                             email: e.target.value,
                           }))
                         }
-                        className="w-full px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
                         placeholder="info@business.com"
                       />
                     </div>
@@ -539,7 +547,7 @@ export default function AdminSettingsPage() {
                             phone: e.target.value,
                           }))
                         }
-                        className="w-full px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
                         placeholder="050-1234567"
                       />
                     </div>
@@ -559,7 +567,7 @@ export default function AdminSettingsPage() {
                             address: e.target.value,
                           }))
                         }
-                        className="w-full px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
                         placeholder="רחוב ירושלים 1, תל אביב"
                       />
                     </div>
@@ -580,7 +588,7 @@ export default function AdminSettingsPage() {
                             },
                           }))
                         }
-                        className="w-full px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
                         placeholder="050-1234567"
                       />
                     </div>
@@ -599,7 +607,7 @@ export default function AdminSettingsPage() {
                         }))
                       }
                       rows={3}
-                      className="w-full px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
                       placeholder="תיאור קצר על העסק..."
                     />
                   </div>
@@ -657,7 +665,7 @@ export default function AdminSettingsPage() {
                               },
                             }))
                           }
-                          className="flex-1 px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                          className="flex-1 px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm text-gray-900"
                         />
                       </div>
                     </div>
@@ -693,7 +701,7 @@ export default function AdminSettingsPage() {
                               },
                             }))
                           }
-                          className="flex-1 px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                          className="flex-1 px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm text-gray-900"
                         />
                       </div>
                     </div>
@@ -763,7 +771,7 @@ export default function AdminSettingsPage() {
                                 backgroundVideo: e.target.value,
                               }))
                             }
-                            className="w-full pl-8 pr-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                            className="w-full pl-8 pr-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm text-gray-900"
                             placeholder="https://example.com/video.mp4"
                           />
                         </div>
@@ -918,7 +926,7 @@ export default function AdminSettingsPage() {
                             },
                           }))
                         }
-                        className="w-full px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
                         placeholder="050-1234567"
                       />
                     </div>

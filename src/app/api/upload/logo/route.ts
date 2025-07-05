@@ -29,13 +29,30 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // כאן תהיה הלוגיקה להעלאה לשרת קבצים
-    // כרגע נחזיר URL לדוגמה
-    const fileName = `logo-${Date.now()}.${file.name.split('.').pop()}`;
-    const logoUrl = `https://example.com/uploads/${fileName}`;
-
-    // סימולציה של העלאה
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    // יצירת שם קובץ ייחודי
+    const timestamp = Date.now();
+    const fileExtension = file.name.split('.').pop();
+    const fileName = `logo-${timestamp}.${fileExtension}`;
+    
+    // המרת הקובץ ל-Buffer
+    const bytes = await file.arrayBuffer();
+    const buffer = Buffer.from(bytes);
+    
+    // שמירת הקובץ בתיקיית public/uploads
+    const fs = require('fs');
+    const path = require('path');
+    
+    // יצירת תיקיית uploads אם לא קיימת
+    const uploadsDir = path.join(process.cwd(), 'public', 'uploads');
+    if (!fs.existsSync(uploadsDir)) {
+      fs.mkdirSync(uploadsDir, { recursive: true });
+    }
+    
+    const filePath = path.join(uploadsDir, fileName);
+    fs.writeFileSync(filePath, buffer);
+    
+    // יצירת URL יחסי
+    const logoUrl = `/uploads/${fileName}`;
 
     return NextResponse.json({
       success: true,
