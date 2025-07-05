@@ -27,11 +27,12 @@ export function OrderingScreen({
   onBack,
 }: OrderingScreenProps) {
   const [selectedCategoryId, setSelectedCategoryId] = useState<string>(
-    categories.length > 0 ? categories[0].id : ""
+    categories[0]?.id || ""
   );
   const [cart, setCart] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(false);
 
   // קטגוריה נבחרת
   const selectedCategory = useMemo(
@@ -91,10 +92,16 @@ export function OrderingScreen({
   };
 
   return (
-    <div className="min-h-screen flex flex-col relative bg-white">
+    <div
+      className={`min-h-screen flex flex-col relative transition-colors duration-300 ${
+        isDarkMode ? "bg-gray-900" : "bg-white"
+      }`}
+    >
       {/* כותרת עליונה */}
       <header
-        className="bg-white/95 backdrop-blur-sm shadow-sm border-b-4 fixed top-0 left-0 right-0 z-30"
+        className={`${
+          isDarkMode ? "bg-gray-800/95" : "bg-white/95"
+        } backdrop-blur-sm shadow-sm border-b-4 fixed top-0 left-0 right-0 z-30 transition-colors duration-300`}
         style={{ borderBottomColor: business.colors.primary }}
       >
         <div className="max-w-7xl mx-auto px-3 sm:px-4 py-3 sm:py-4 flex items-center justify-between">
@@ -133,47 +140,102 @@ export function OrderingScreen({
                 />
               )}
               <div>
-                <h1 className="text-base sm:text-xl font-bold text-gray-800 truncate max-w-32 sm:max-w-none bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                <h1
+                  className={`text-base sm:text-xl font-bold truncate max-w-32 sm:max-w-none bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent ${
+                    isDarkMode ? "text-white" : "text-gray-800"
+                  }`}
+                >
                   {business.name}
                 </h1>
-                <p className="text-xs sm:text-sm text-gray-500">
+                <p
+                  className={`text-xs sm:text-sm ${
+                    isDarkMode ? "text-gray-300" : "text-gray-500"
+                  }`}
+                >
                   {orderType === "DINE_IN" ? "🍽️ שבת במקום" : "📦 לקחת"}
                 </p>
               </div>
             </div>
           </div>
 
-          {/* כפתור סל */}
-          <button
-            onClick={() => setIsCartOpen(true)}
-            className={`
-              relative flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 rounded-full font-bold text-white
-              transition-all duration-300 hover:scale-105 shadow-lg
-              ${
-                cartItemsCount > 0
-                  ? "bg-green-700 hover:bg-green-800"
-                  : "bg-green-700 hover:bg-green-800 opacity-50"
-              }
-            `}
-          >
-            <svg
-              className="w-6 h-6 sm:w-7 sm:h-7 text-white"
-              fill="currentColor"
-              viewBox="0 0 24 24"
+          {/* כפתורים ימניים */}
+          <div className="flex items-center gap-2 sm:gap-3">
+            {/* כפתור החלפת ערכת נושא */}
+            <button
+              onClick={() => setIsDarkMode(!isDarkMode)}
+              className={`
+                flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full font-bold text-white
+                transition-all duration-300 hover:scale-105 shadow-lg
+                ${
+                  isDarkMode
+                    ? "bg-yellow-600 hover:bg-yellow-700"
+                    : "bg-gray-700 hover:bg-gray-800"
+                }
+              `}
+              style={{
+                backgroundColor: isDarkMode
+                  ? business.colors.secondary
+                  : business.colors.primary,
+              }}
             >
-              <path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12L8.1 13h7.45c.75 0 1.41-.41 1.75-1.03L21.7 4H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z" />
-            </svg>
-            {cartItemsCount > 0 && (
-              <span className="bg-red-500 text-white rounded-full w-5 h-5 sm:w-6 sm:h-6 flex items-center justify-center text-xs sm:text-sm font-bold absolute -top-1 -right-1 sm:-top-2 sm:-right-2">
-                {cartItemsCount}
-              </span>
-            )}
-          </button>
+              {isDarkMode ? (
+                <svg
+                  className="w-5 h-5 sm:w-6 sm:h-6 text-white"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+              ) : (
+                <svg
+                  className="w-5 h-5 sm:w-6 sm:h-6 text-white"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                </svg>
+              )}
+            </button>
+
+            {/* כפתור סל */}
+            <button
+              onClick={() => setIsCartOpen(true)}
+              className={`
+                relative flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 rounded-full font-bold text-white
+                transition-all duration-300 hover:scale-105 shadow-lg
+                ${
+                  cartItemsCount > 0
+                    ? "bg-green-700 hover:bg-green-800"
+                    : "bg-green-700 hover:bg-green-800 opacity-50"
+                }
+              `}
+              style={{ backgroundColor: business.colors.primary }}
+            >
+              <svg
+                className="w-6 h-6 sm:w-7 sm:h-7 text-white"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12L8.1 13h7.45c.75 0 1.41-.41 1.75-1.03L21.7 4H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z" />
+              </svg>
+              {cartItemsCount > 0 && (
+                <span className="bg-red-500 text-white rounded-full w-5 h-5 sm:w-6 sm:h-6 flex items-center justify-center text-xs sm:text-sm font-bold absolute -top-1 -right-1 sm:-top-2 sm:-right-2">
+                  {cartItemsCount}
+                </span>
+              )}
+            </button>
+          </div>
         </div>
       </header>
 
       {/* סרגל קטגוריות אופקי - מובייל בלבד */}
-      <div className="sm:hidden bg-white border-b border-gray-200 shadow-sm mt-20 sm:mt-24">
+      <div
+        className={`sm:hidden ${
+          isDarkMode
+            ? "bg-gray-800 border-gray-700"
+            : "bg-white border-gray-200"
+        } border-b shadow-sm mt-20 sm:mt-24 transition-colors duration-300`}
+      >
         <div className="overflow-x-auto">
           <div className="flex gap-3 px-4 py-3 min-w-max">
             {categories.map((category) => (
@@ -184,7 +246,11 @@ export function OrderingScreen({
                   flex flex-col items-center gap-1 px-3 py-2 rounded-lg transition-all duration-200 whitespace-nowrap
                   ${
                     selectedCategoryId === category.id
-                      ? "bg-blue-100 text-blue-700 border-2 border-blue-300"
+                      ? isDarkMode
+                        ? "bg-blue-900 text-blue-200 border-2 border-blue-600"
+                        : "bg-blue-100 text-blue-700 border-2 border-blue-300"
+                      : isDarkMode
+                      ? "bg-gray-700 text-gray-300 hover:bg-gray-600"
                       : "bg-gray-50 text-gray-700 hover:bg-gray-100"
                   }
                 `}
@@ -238,9 +304,14 @@ export function OrderingScreen({
       {/* תוכן ראשי */}
       <div className="flex-1 flex flex-row-reverse mt-20 sm:mt-24">
         {/* פאנל מוצרים */}
-        <div className="order-1 flex-1 overflow-y-auto bg-white">
+        <div
+          className={`order-1 flex-1 overflow-y-auto transition-colors duration-300 ${
+            isDarkMode ? "bg-gray-900" : "bg-white"
+          }`}
+        >
           <ProductsPanel
             products={selectedCategory?.products || []}
+            isDarkMode={isDarkMode}
             onAddToCart={(product, options, quantity) => {
               const selectedOptions = [];
               for (const [optionId, value] of Object.entries(options)) {
@@ -320,7 +391,11 @@ export function OrderingScreen({
         </div>
         {/* פאנל קטגוריות - צד ימין */}
         <div
-          className="order-2 w-20 lg:w-56 max-w-xs h-screen overflow-y-auto bg-white/95 backdrop-blur-sm shadow-lg border-l border-gray-200 z-10 hidden sm:block"
+          className={`order-2 w-20 lg:w-56 max-w-xs h-screen overflow-y-auto backdrop-blur-sm shadow-lg border-l z-10 hidden sm:block transition-colors duration-300 ${
+            isDarkMode
+              ? "bg-gray-800/95 border-gray-700"
+              : "bg-white/95 border-gray-200"
+          }`}
           style={{ minWidth: "80px" }}
         >
           <CategoriesPanel
@@ -329,6 +404,7 @@ export function OrderingScreen({
             onCategorySelect={setSelectedCategoryId}
             businessColors={business.colors}
             hideTitleOnMobile={true}
+            isDarkMode={isDarkMode}
           />
         </div>
       </div>
@@ -347,6 +423,7 @@ export function OrderingScreen({
             setIsCartOpen(false);
             setIsOrderModalOpen(true);
           }}
+          isDarkMode={isDarkMode}
         />
       )}
 
@@ -363,21 +440,32 @@ export function OrderingScreen({
             // חזרה למסך הראשי
             setTimeout(() => onBack(), 2000);
           }}
+          isDarkMode={isDarkMode}
         />
       )}
 
       {/* תחתית קבועה עם סיכום */}
       <div
-        className="fixed bottom-16 sm:bottom-0 left-0 right-0 bg-white/95 backdrop-blur-sm border-t-4 shadow-lg p-3 sm:p-4 z-20"
+        className={`fixed bottom-16 sm:bottom-0 left-0 right-0 backdrop-blur-sm border-t-4 shadow-lg p-3 sm:p-4 z-20 transition-colors duration-300 ${
+          isDarkMode ? "bg-gray-800/95" : "bg-white/95"
+        }`}
         style={{ borderTopColor: business.colors.primary }}
       >
         {cartItemsCount > 0 ? (
           <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-0">
             <div className="flex items-center gap-2 sm:gap-4">
-              <span className="text-base sm:text-lg font-bold text-gray-800">
+              <span
+                className={`text-base sm:text-lg font-bold ${
+                  isDarkMode ? "text-white" : "text-gray-800"
+                }`}
+              >
                 סה"כ: {cartTotal.toFixed(2)} ₪
               </span>
-              <span className="text-xs sm:text-sm text-gray-600">
+              <span
+                className={`text-xs sm:text-sm ${
+                  isDarkMode ? "text-gray-300" : "text-gray-600"
+                }`}
+              >
                 ({cartItemsCount} פריטים)
               </span>
             </div>
@@ -385,7 +473,11 @@ export function OrderingScreen({
             <div className="flex gap-2 sm:gap-3 w-full sm:w-auto">
               <button
                 onClick={() => setIsCartOpen(true)}
-                className="flex-1 sm:flex-none px-4 sm:px-6 py-2 sm:py-3 border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-sm sm:text-base flex items-center justify-center gap-2"
+                className={`flex-1 sm:flex-none px-4 sm:px-6 py-2 sm:py-3 border-2 rounded-lg transition-colors text-sm sm:text-base flex items-center justify-center gap-2 ${
+                  isDarkMode
+                    ? "border-gray-600 text-gray-300 hover:bg-gray-700"
+                    : "border-gray-300 text-gray-700 hover:bg-gray-50"
+                }`}
               >
                 <svg
                   className="w-4 h-4 sm:w-5 sm:h-5"
@@ -404,7 +496,8 @@ export function OrderingScreen({
               </button>
               <button
                 onClick={() => setIsOrderModalOpen(true)}
-                className="flex-1 sm:flex-none px-4 sm:px-8 py-2 sm:py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg font-bold transition-colors text-sm sm:text-base flex items-center justify-center gap-2"
+                className="flex-1 sm:flex-none px-4 sm:px-8 py-2 sm:py-3 text-white rounded-lg font-bold transition-colors text-sm sm:text-base flex items-center justify-center gap-2"
+                style={{ backgroundColor: business.colors.primary }}
               >
                 <svg
                   className="w-4 h-4 sm:w-5 sm:h-5"
@@ -425,7 +518,11 @@ export function OrderingScreen({
           </div>
         ) : (
           <div className="max-w-7xl mx-auto text-center">
-            <span className="text-base sm:text-lg font-bold text-gray-600">
+            <span
+              className={`text-base sm:text-lg font-bold ${
+                isDarkMode ? "text-gray-300" : "text-gray-600"
+              }`}
+            >
               הסל ריק - הוסף מוצרים כדי להתחיל
             </span>
           </div>
@@ -433,11 +530,18 @@ export function OrderingScreen({
       </div>
 
       {/* סרגל ניווט תחתון - מובייל בלבד */}
-      <div className="sm:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-30">
+      <div
+        className={`sm:hidden fixed bottom-0 left-0 right-0 border-t shadow-lg z-30 transition-colors duration-300 ${
+          isDarkMode
+            ? "bg-gray-800 border-gray-700"
+            : "bg-white border-gray-200"
+        }`}
+      >
         <div className="flex justify-around items-center py-3">
           <button
             onClick={onBack}
-            className="flex flex-col items-center justify-center w-12 h-12 rounded-full bg-green-700 hover:bg-green-800 transition-colors"
+            className="flex flex-col items-center justify-center w-12 h-12 rounded-full transition-colors"
+            style={{ backgroundColor: business.colors.primary }}
           >
             <svg
               className="w-6 h-6 text-white"
@@ -453,7 +557,10 @@ export function OrderingScreen({
               />
             </svg>
           </button>
-          <button className="flex flex-col items-center justify-center w-12 h-12 rounded-full bg-green-700 text-white">
+          <button
+            className="flex flex-col items-center justify-center w-12 h-12 rounded-full text-white"
+            style={{ backgroundColor: business.colors.primary }}
+          >
             <svg
               className="w-6 h-6"
               fill="none"
@@ -470,7 +577,8 @@ export function OrderingScreen({
           </button>
           <button
             onClick={() => setIsCartOpen(true)}
-            className="flex flex-col items-center justify-center w-12 h-12 rounded-full bg-green-700 hover:bg-green-800 transition-colors relative"
+            className="flex flex-col items-center justify-center w-12 h-12 rounded-full transition-colors relative"
+            style={{ backgroundColor: business.colors.primary }}
           >
             <svg
               className="w-6 h-6 text-white"

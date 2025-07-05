@@ -10,6 +10,7 @@ interface OrderModalProps {
   orderType: OrderType;
   onClose: () => void;
   onOrderComplete: () => void;
+  isDarkMode?: boolean;
 }
 
 export function OrderModal({
@@ -18,6 +19,7 @@ export function OrderModal({
   orderType,
   onClose,
   onOrderComplete,
+  isDarkMode = false,
 }: OrderModalProps) {
   const [customerName, setCustomerName] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");

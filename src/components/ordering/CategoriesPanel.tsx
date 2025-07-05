@@ -8,6 +8,7 @@ interface CategoriesPanelProps {
   onCategorySelect: (categoryId: string) => void;
   businessColors: any;
   hideTitleOnMobile?: boolean;
+  isDarkMode?: boolean;
 }
 
 export function CategoriesPanel({
@@ -16,6 +17,7 @@ export function CategoriesPanel({
   onCategorySelect,
   businessColors,
   hideTitleOnMobile = false,
+  isDarkMode = false,
 }: CategoriesPanelProps) {
   return (
     <div className="p-2 sm:p-3 bg-transparent">
@@ -24,7 +26,11 @@ export function CategoriesPanel({
         typeof window !== "undefined" &&
         window.innerWidth <= 768
       ) && (
-        <h2 className="text-sm sm:text-base font-bold mb-2 sm:mb-3 text-gray-800 text-center">
+        <h2
+          className={`text-sm sm:text-base font-bold mb-2 sm:mb-3 text-center ${
+            isDarkMode ? "text-white" : "text-gray-800"
+          }`}
+        >
           קטגוריות
         </h2>
       )}
@@ -37,18 +43,36 @@ export function CategoriesPanel({
               w-full p-3 sm:p-4 rounded-xl transition-all duration-200 hover:scale-105
               ${
                 selectedCategoryId === category.id
-                  ? "bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg"
+                  ? "text-white shadow-lg"
+                  : isDarkMode
+                  ? "bg-gray-700 hover:bg-gray-600 border border-gray-600 shadow-sm"
                   : "bg-white hover:bg-gray-50 border border-gray-200 shadow-sm"
               }
             `}
+            style={{
+              background:
+                selectedCategoryId === category.id
+                  ? `linear-gradient(to right, ${businessColors.primary}, ${businessColors.secondary})`
+                  : undefined,
+            }}
           >
             <div className="flex flex-col items-center text-center">
-              <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden mb-2 border-2 border-gray-200 relative">
+              <div
+                className={`w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden mb-2 border-2 relative ${
+                  selectedCategoryId === category.id
+                    ? "border-white"
+                    : isDarkMode
+                    ? "border-gray-600"
+                    : "border-gray-200"
+                }`}
+              >
                 {category.image ? (
                   <img
                     src={category.image}
                     alt={category.name}
-                    className="w-full h-full object-contain bg-gray-50"
+                    className={`w-full h-full object-contain ${
+                      isDarkMode ? "bg-gray-600" : "bg-gray-50"
+                    }`}
                     onError={(e) => {
                       const target = e.target as HTMLImageElement;
                       target.style.display = "none";
@@ -65,6 +89,8 @@ export function CategoriesPanel({
                   } ${
                     selectedCategoryId === category.id
                       ? "bg-blue-400 text-white"
+                      : isDarkMode
+                      ? "bg-gradient-to-br from-gray-600 to-gray-700 text-gray-300"
                       : "bg-gradient-to-br from-gray-200 to-gray-300 text-gray-600"
                   }`}
                   style={{
@@ -79,6 +105,8 @@ export function CategoriesPanel({
                   className={`font-bold text-sm sm:text-base truncate ${
                     selectedCategoryId === category.id
                       ? "text-white"
+                      : isDarkMode
+                      ? "text-white"
                       : "text-gray-800"
                   }`}
                 >
@@ -88,6 +116,8 @@ export function CategoriesPanel({
                   className={`text-xs ${
                     selectedCategoryId === category.id
                       ? "text-blue-100"
+                      : isDarkMode
+                      ? "text-gray-400"
                       : "text-gray-500"
                   }`}
                 >

@@ -12,6 +12,7 @@ interface CartPanelProps {
   onRemoveItem: (index: number) => void;
   onClearCart: () => void;
   onProceedToOrder: () => void;
+  isDarkMode?: boolean;
 }
 
 export function CartPanel({
@@ -23,6 +24,7 @@ export function CartPanel({
   onRemoveItem,
   onClearCart,
   onProceedToOrder,
+  isDarkMode = false,
 }: CartPanelProps) {
   const total = calculateCartTotal(cart);
 

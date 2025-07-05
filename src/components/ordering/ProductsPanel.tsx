@@ -15,9 +15,14 @@ interface ProductsPanelProps {
     options: any,
     quantity: number
   ) => void;
+  isDarkMode?: boolean;
 }
 
-export function ProductsPanel({ products, onAddToCart }: ProductsPanelProps) {
+export function ProductsPanel({
+  products,
+  onAddToCart,
+  isDarkMode = false,
+}: ProductsPanelProps) {
   const [selectedProduct, setSelectedProduct] =
     useState<ProductWithOptions | null>(null);
   const [selectedOptions, setSelectedOptions] = useState<Record<string, any>>(
@@ -114,7 +119,11 @@ export function ProductsPanel({ products, onAddToCart }: ProductsPanelProps) {
                 flex items-center p-4 rounded-xl border-2 transition-all duration-200 cursor-pointer
                 ${
                   currentValue?.id === value.id
-                    ? "border-blue-500 bg-blue-50"
+                    ? isDarkMode
+                      ? "border-blue-500 bg-blue-900"
+                      : "border-blue-500 bg-blue-50"
+                    : isDarkMode
+                    ? "border-gray-600 bg-gray-700 hover:border-gray-500 hover:bg-gray-600"
                     : "border-gray-200 bg-white hover:border-gray-300 hover:bg-gray-50"
                 }
               `}
@@ -130,7 +139,11 @@ export function ProductsPanel({ products, onAddToCart }: ProductsPanelProps) {
                 className="w-5 h-5 text-blue-600 mr-3"
               />
               <div className="flex-1">
-                <span className="font-medium text-gray-800 text-lg">
+                <span
+                  className={`font-medium text-lg ${
+                    isDarkMode ? "text-white" : "text-gray-800"
+                  }`}
+                >
                   {value.name}
                 </span>
               </div>
@@ -160,7 +173,11 @@ export function ProductsPanel({ products, onAddToCart }: ProductsPanelProps) {
                 flex items-center p-4 rounded-xl border-2 transition-all duration-200 cursor-pointer
                 ${
                   currentValue?.includes(value)
-                    ? "border-blue-500 bg-blue-50"
+                    ? isDarkMode
+                      ? "border-blue-500 bg-blue-900"
+                      : "border-blue-500 bg-blue-50"
+                    : isDarkMode
+                    ? "border-gray-600 bg-gray-700 hover:border-gray-500 hover:bg-gray-600"
                     : "border-gray-200 bg-white hover:border-gray-300 hover:bg-gray-50"
                 }
               `}
@@ -174,7 +191,11 @@ export function ProductsPanel({ products, onAddToCart }: ProductsPanelProps) {
                 className="w-5 h-5 text-blue-600 mr-3"
               />
               <div className="flex-1">
-                <span className="font-medium text-gray-800 text-lg">
+                <span
+                  className={`font-medium text-lg ${
+                    isDarkMode ? "text-white" : "text-gray-800"
+                  }`}
+                >
                   {value.name}
                 </span>
               </div>
@@ -198,8 +219,20 @@ export function ProductsPanel({ products, onAddToCart }: ProductsPanelProps) {
       return (
         <div className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
-            <div className="text-center bg-blue-50 p-4 rounded-xl border-2 border-blue-200">
-              <h4 className="font-bold text-lg mb-4 text-gray-800">חצי שמאל</h4>
+            <div
+              className={`text-center p-4 rounded-xl border-2 ${
+                isDarkMode
+                  ? "bg-blue-900 border-blue-600"
+                  : "bg-blue-50 border-blue-200"
+              }`}
+            >
+              <h4
+                className={`font-bold text-lg mb-4 ${
+                  isDarkMode ? "text-white" : "text-gray-800"
+                }`}
+              >
+                חצי שמאל
+              </h4>
               <div className="space-y-3">
                 {values
                   .filter(
@@ -213,7 +246,11 @@ export function ProductsPanel({ products, onAddToCart }: ProductsPanelProps) {
                         flex items-center p-3 rounded-lg border-2 transition-all duration-200 cursor-pointer
                         ${
                           currentValue?.left?.id === value.id
-                            ? "border-blue-500 bg-blue-100"
+                            ? isDarkMode
+                              ? "border-blue-500 bg-blue-800"
+                              : "border-blue-500 bg-blue-100"
+                            : isDarkMode
+                            ? "border-gray-600 bg-gray-700 hover:border-gray-500"
                             : "border-gray-200 bg-white hover:border-gray-300"
                         }
                       `}
@@ -232,7 +269,11 @@ export function ProductsPanel({ products, onAddToCart }: ProductsPanelProps) {
                         }
                         className="w-4 h-4 text-blue-600 mr-2"
                       />
-                      <span className="font-medium text-gray-800 text-sm">
+                      <span
+                        className={`font-medium text-sm ${
+                          isDarkMode ? "text-white" : "text-gray-800"
+                        }`}
+                      >
                         {value.name}
                       </span>
                       {value.additionalPrice > 0 && (
@@ -244,8 +285,20 @@ export function ProductsPanel({ products, onAddToCart }: ProductsPanelProps) {
                   ))}
               </div>
             </div>
-            <div className="text-center bg-red-50 p-4 rounded-xl border-2 border-red-200">
-              <h4 className="font-bold text-lg mb-4 text-gray-800">חצי ימין</h4>
+            <div
+              className={`text-center p-4 rounded-xl border-2 ${
+                isDarkMode
+                  ? "bg-red-900 border-red-600"
+                  : "bg-red-50 border-red-200"
+              }`}
+            >
+              <h4
+                className={`font-bold text-lg mb-4 ${
+                  isDarkMode ? "text-white" : "text-gray-800"
+                }`}
+              >
+                חצי ימין
+              </h4>
               <div className="space-y-3">
                 {values
                   .filter(
@@ -278,7 +331,11 @@ export function ProductsPanel({ products, onAddToCart }: ProductsPanelProps) {
                         }
                         className="w-4 h-4 text-red-600 mr-2"
                       />
-                      <span className="font-medium text-gray-800 text-sm">
+                      <span
+                        className={`font-medium text-sm ${
+                          isDarkMode ? "text-white" : "text-gray-800"
+                        }`}
+                      >
                         {value.name}
                       </span>
                       {value.additionalPrice > 0 && (
@@ -297,7 +354,11 @@ export function ProductsPanel({ products, onAddToCart }: ProductsPanelProps) {
 
     if (option.type === "QUANTITY") {
       return (
-        <div className="flex items-center justify-center space-x-4 space-x-reverse bg-gray-50 p-4 rounded-xl">
+        <div
+          className={`flex items-center justify-center space-x-4 space-x-reverse p-4 rounded-xl ${
+            isDarkMode ? "bg-gray-800" : "bg-gray-50"
+          }`}
+        >
           <button
             onClick={() => setQuantity(Math.max(1, quantity - 1))}
             className="w-12 h-12 rounded-full bg-blue-500 text-white flex items-center justify-center hover:bg-blue-600 font-bold text-xl transition-colors"
@@ -321,12 +382,20 @@ export function ProductsPanel({ products, onAddToCart }: ProductsPanelProps) {
   };
 
   return (
-    <div className="flex-1 overflow-y-auto p-3 sm:p-6 bg-white">
+    <div
+      className={`flex-1 overflow-y-auto p-3 sm:p-6 transition-colors duration-300 ${
+        isDarkMode ? "bg-gray-900" : "bg-white"
+      }`}
+    >
       <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
         {products.map((product, index) => (
           <div
             key={product.id}
-            className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 hover:scale-105 cursor-pointer"
+            className={`rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden border hover:scale-105 cursor-pointer ${
+              isDarkMode
+                ? "bg-gray-800 border-gray-700 hover:border-gray-600"
+                : "bg-white border-gray-100"
+            }`}
             style={{ animationDelay: `${index * 0.1}s` }}
             onClick={() => handleProductClick(product)}
           >
@@ -335,10 +404,18 @@ export function ProductsPanel({ products, onAddToCart }: ProductsPanelProps) {
                 <img
                   src={product.image}
                   alt={product.name}
-                  className="w-full h-full object-contain bg-gray-50 transition-transform duration-300 hover:scale-105"
+                  className={`w-full h-full object-contain transition-transform duration-300 hover:scale-105 ${
+                    isDarkMode ? "bg-gray-700" : "bg-gray-50"
+                  }`}
                 />
               ) : (
-                <div className="w-full h-full flex items-center justify-center text-3xl sm:text-4xl bg-gradient-to-br from-gray-100 to-gray-200">
+                <div
+                  className={`w-full h-full flex items-center justify-center text-3xl sm:text-4xl ${
+                    isDarkMode
+                      ? "bg-gradient-to-br from-gray-700 to-gray-800"
+                      : "bg-gradient-to-br from-gray-100 to-gray-200"
+                  }`}
+                >
                   🍽️
                 </div>
               )}
@@ -351,11 +428,19 @@ export function ProductsPanel({ products, onAddToCart }: ProductsPanelProps) {
 
             {/* תוכן הכרטיס */}
             <div className="p-3 sm:p-4">
-              <h3 className="font-bold text-base sm:text-lg mb-1 text-gray-800 text-center line-clamp-2">
+              <h3
+                className={`font-bold text-base sm:text-lg mb-1 text-center line-clamp-2 ${
+                  isDarkMode ? "text-white" : "text-gray-800"
+                }`}
+              >
                 {product.name}
               </h3>
               {product.description && (
-                <p className="text-gray-600 mb-3 text-xs sm:text-sm text-center line-clamp-2">
+                <p
+                  className={`mb-3 text-xs sm:text-sm text-center line-clamp-2 ${
+                    isDarkMode ? "text-gray-300" : "text-gray-600"
+                  }`}
+                >
                   {product.description}
                 </p>
               )}
@@ -374,7 +459,11 @@ export function ProductsPanel({ products, onAddToCart }: ProductsPanelProps) {
       {/* Modal for product options */}
       {showModal && selectedProduct && (
         <div className="fixed inset-0 bg-black bg-opacity-70 backdrop-blur-sm flex items-center justify-center z-50 p-3 sm:p-4">
-          <div className="bg-white rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto animate-fade-in-up shadow-2xl">
+          <div
+            className={`rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto animate-fade-in-up shadow-2xl transition-colors duration-300 ${
+              isDarkMode ? "bg-gray-800" : "bg-white"
+            }`}
+          >
             <div className="p-4 sm:p-8">
               {/* כותרת עם תמונה */}
               <div className="flex items-center gap-4 mb-6">
@@ -386,7 +475,11 @@ export function ProductsPanel({ products, onAddToCart }: ProductsPanelProps) {
                   />
                 )}
                 <div className="flex-1">
-                  <h2 className="text-xl sm:text-2xl font-bold text-gray-800">
+                  <h2
+                    className={`text-xl sm:text-2xl font-bold ${
+                      isDarkMode ? "text-white" : "text-gray-800"
+                    }`}
+                  >
                     {selectedProduct.name}
                   </h2>
                   <p className="text-lg sm:text-xl font-bold text-green-600">
